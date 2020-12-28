@@ -1,0 +1,29 @@
+{
+	"name": "balloons",
+	"version": "1.0.0",
+	"description": "Physics-enabled balloons.",
+	"homepage": "fairburn.dev",
+	"authors": "Garrett Fairburn",
+	"configuration": [
+		{
+			"key": "BALLOONS_KEYBIND_SPAWN_BALLOON",
+			"path": ["keybind", "spawn_balloon"],
+			"description": "Keyboard binding to spawn a balloon."
+		},
+		{
+			"key": "BALLOONS_KEYBIND_POP_BALLOONS",
+			"path": ["keybind", "pop_balloons"],
+			"description": "Keyboard binding to pop all balloons."
+		},
+		{
+			"key": "BALLOONS_ALARM_BALLOONINFLATED_POP",
+			"path": ["alarm", "balloon_inflated", "pop"],
+			"description": "Alarm index to use for balloon inflated object pop delay."
+		},
+		{
+			"key": "BALLOONS_ALARM_BALLOONCARCASS_FADE",
+			"path": ["alarm", "balloon_carcass", "pop"],
+			"description": "Alarm index to use for balloon carcass object fading."
+		}
+	]
+}
