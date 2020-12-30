@@ -1,0 +1,11 @@
+Garrett Fairburn has released the following assets under "CC0 1.0 Universal (CC0 1.0)" (see https://creativecommons.org/publicdomain/zero/1.0/ for details):
+
+assets/sprites/balloon/red_dying.png
+assets/sprites/balloon/red_carcass.png
+assets/sprites/balloon/blue_carcass.png
+assets/sprites/balloon/inflated_solid_mask.png
+assets/sprites/balloon/blue_inflating.png
+assets/sprites/balloon/red_inflating.png
+assets/sprites/balloon/red_inflated.png
+assets/sprites/balloon/blue_dying.png
+assets/sprites/balloon/blue_inflated.png

@@ -78,12 +78,13 @@ target_link_options(${MOD_NAME}
 	PRIVATE -rdynamic)
 
 # Add installation target.
-install(FILES ModInfo.json
-	DESTINATION ".")
-install(FILES LICENSE
+install(FILES
+	ModInfo.json
+	LICENSE.assets.txt
+	LICENSE.source.txt
 	DESTINATION ".")
 install(TARGETS ${MOD_NAME} LIBRARY)
-install(DIRECTORY assets
-	DESTINATION ".")
-install(DIRECTORY ACKNOWLEDGMENTS
+install(DIRECTORY
+	ACKNOWLEDGMENTS
+	assets
 	DESTINATION ".")
