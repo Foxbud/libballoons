@@ -32,7 +32,7 @@
 void KeybindSpawnBalloonListener(void) {
 	/* Get player instance. */
 	AERInstance * player;
-	size_t numPlayers = AERObjectGetInstances(
+	size_t numPlayers = AERInstanceGetByObject(
 			AER_OBJECT_CHAR,
 			1,
 			&player
@@ -62,7 +62,7 @@ void KeybindSpawnBalloonListener(void) {
 
 void KeybindPopBalloonsListener(void) {
 	/* Get all balloon instances. */
-	size_t numBalloons = AERObjectGetInstances(
+	size_t numBalloons = AERInstanceGetByObject(
 			objects.balloonInflated,
 			0,
 			NULL
@@ -72,7 +72,7 @@ void KeybindPopBalloonsListener(void) {
 		return;
 	}
 	AERInstance ** balloons = malloc(numBalloons * sizeof(AERInstance *));
-	AERObjectGetInstances(
+	AERInstanceGetByObject(
 			objects.balloonInflated,
 			numBalloons,
 			balloons
