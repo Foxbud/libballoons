@@ -30,16 +30,28 @@ static const float SPRITE_SPEED = 0.25f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool DSCreateListener(AERInstance * balloon) {
-	AERInstanceSetSpriteSpeed(balloon, SPRITE_SPEED);
+static bool CreateListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
+	AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
 
 	return true;
 }
 
-static bool DSDestroyListener(AERInstance * balloon) {
+static bool DestroyListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
 	/* Spawn balloon carcass instance. */
 	float x, y;
-	AERInstanceGetPosition(balloon, &x, &y);
+	AERInstanceGetPosition(target, &x, &y);
 	AERInstance * new = AERInstanceCreate(
 			objects.balloonCarcass,
 			x,
@@ -47,7 +59,7 @@ static bool DSDestroyListener(AERInstance * balloon) {
 	);
 
 	/* Set new sprite. */
-	int32_t spriteIdx = AERInstanceGetSprite(balloon);
+	int32_t spriteIdx = AERInstanceGetSprite(target);
 	if (spriteIdx == sprites.balloonDyingBlue)
 		AERInstanceSetSprite(new, sprites.balloonCarcassBlue);
 	else
@@ -56,8 +68,14 @@ static bool DSDestroyListener(AERInstance * balloon) {
 	return true;
 }
 
-static bool DSAnimationEndListener(AERInstance * balloon) {
-	AERInstanceDestroy(balloon);
+static bool AnimationEndListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
+	AERInstanceDestroy(target);
 
 	return true;
 }
@@ -84,18 +102,15 @@ void RegisterBalloonDyingObject(void) {
 void RegisterBalloonDyingListeners(void) {
 	AERObjectAttachCreateListener(
 			objects.balloonDying,
-			DSCreateListener,
-			true
+			CreateListener
 	);
 	AERObjectAttachDestroyListener(
 			objects.balloonDying,
-			DSDestroyListener,
-			true
+			DestroyListener
 	);
 	AERObjectAttachAnimationEndListener(
 			objects.balloonDying,
-			DSAnimationEndListener,
-			true
+			AnimationEndListener
 	);
 
 	return;

@@ -23,8 +23,14 @@
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool DSCreateListener(AERInstance * balloon) {
-	AERInstanceSyncDepth(balloon);
+static bool CreateListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
+	AERInstanceSyncDepth(target);
 
 	return true;
 }
@@ -51,8 +57,7 @@ void RegisterBalloonBaseObject(void) {
 void RegisterBalloonBaseListeners(void) {
 	AERObjectAttachCreateListener(
 			objects.balloonBase,
-			DSCreateListener,
-			true
+			CreateListener
 	);
 
 	return;

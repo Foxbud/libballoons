@@ -40,17 +40,29 @@ static const int32_t MAX_POP_DELAY = 3;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool DSCreateListener(AERInstance * balloon) {
-	AERInstanceSetFriction(balloon, FRICTION);
-	AERInstanceSetSpriteSpeed(balloon, SPRITE_SPEED);
+static bool CreateListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
+	AERInstanceSetFriction(target, FRICTION);
+	AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
 
 	return true;
 }
 
-static bool DSDestroyListener(AERInstance * balloon) {
+static bool DestroyListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
 	/* Spawn balloon dying instance. */
 	float x, y;
-	AERInstanceGetPosition(balloon, &x, &y);
+	AERInstanceGetPosition(target, &x, &y);
 	AERInstance * new = AERInstanceCreate(
 			objects.balloonDying,
 			x,
@@ -58,7 +70,7 @@ static bool DSDestroyListener(AERInstance * balloon) {
 	);
 
 	/* Set new sprite. */
-	int32_t spriteIdx = AERInstanceGetSprite(balloon);
+	int32_t spriteIdx = AERInstanceGetSprite(target);
 	if (spriteIdx == sprites.balloonInflatedBlue)
 		AERInstanceSetSprite(new, sprites.balloonDyingBlue);
 	else
@@ -67,24 +79,36 @@ static bool DSDestroyListener(AERInstance * balloon) {
 	return true;
 }
 
-static bool DSAlarmPopListener(AERInstance * balloon) {
-	AERInstanceDestroy(balloon);
+static bool PopAlarmListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
+	AERInstanceDestroy(target);
 
 	return true;
 }
 
-static bool DSStepListener(AERInstance * balloon) {
+static bool StepListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
 	/* Synchronize draw depth. */
-	AERInstanceSyncDepth(balloon);
+	AERInstanceSyncDepth(target);
 
 	/* Limit speed. */
 	float x, y;
-	AERInstanceGetMotion(balloon, &x, &y);
+	AERInstanceGetMotion(target, &x, &y);
 	float speed = sqrtf(x * x + y * y);
 	if (speed > MAX_MOVE_SPEED) {
 		float coef = MAX_MOVE_SPEED / speed;
 		AERInstanceSetMotion(
-				balloon,
+				target,
 				x * coef,
 				y * coef
 		);
@@ -93,13 +117,16 @@ static bool DSStepListener(AERInstance * balloon) {
 	return true;
 }
 
-static bool DSMoveCollisionListener(
-		AERInstance * balloon,
+static bool MoveCollisionListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
 		AERInstance * other
 ) {
+	if (!event->next(event, target, other)) return false;
+
 	/* Move balloon away from center of other object. */
 	float xb, yb, xo, yo;
-	AERInstanceGetPosition(balloon, &xb, &yb);
+	AERInstanceGetPosition(target, &xb, &yb);
 	AERInstanceGetPosition(other, &xo, &yo);
 	float dx = xb - xo;
 	float dy = yb - yo;
@@ -113,7 +140,7 @@ static bool DSMoveCollisionListener(
 	}
 	float coef = MAX_MOVE_SPEED / sqrtf(dx * dx + dy * dy);
 	AERInstanceAddMotion(
-			balloon,
+			target,
 			dx * coef,
 			dy * coef
 	);
@@ -121,14 +148,15 @@ static bool DSMoveCollisionListener(
 	return true;
 }
 
-static bool DSPopCollisionListener(
-		AERInstance * balloon,
+static bool PopCollisionListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
 		AERInstance * other
 ) {
-	(void)other;
+	if (!event->next(event, target, other)) return false;
 
 	AERInstanceSetAlarm(
-			balloon,
+			target,
 			conf.alarmBalloonInflatedPop,
 			AERRandIntRange(1, MAX_POP_DELAY + 1)
 	);
@@ -158,52 +186,44 @@ void RegisterBalloonInflatedObject(void) {
 void RegisterBalloonInflatedListeners(void) {
 	AERObjectAttachCreateListener(
 			objects.balloonInflated,
-			DSCreateListener,
-			true
+			CreateListener
 	);
 	AERObjectAttachDestroyListener(
 			objects.balloonInflated,
-			DSDestroyListener,
-			true
+			DestroyListener
 	);
 	AERObjectAttachAlarmListener(
 			objects.balloonInflated,
 			conf.alarmBalloonInflatedPop,
-			DSAlarmPopListener,
-			true
+			PopAlarmListener
 	);
 	AERObjectAttachStepListener(
 			objects.balloonInflated,
-			DSStepListener,
-			true
+			StepListener
 	);
 
 	/* Move collisions. */
 	AERObjectAttachCollisionListener(
 			objects.balloonInflated,
 			objects.balloonInflated,
-			DSMoveCollisionListener,
-			true
+			MoveCollisionListener
 	);
 	AERObjectAttachCollisionListener(
 			objects.balloonInflated,
 			AER_OBJECT_CHAR,
-			DSMoveCollisionListener,
-			true
+			MoveCollisionListener
 	);
 	AERObjectAttachCollisionListener(
 			objects.balloonInflated,
 			AER_OBJECT_PATHFINDOBSTACLE,
-			DSMoveCollisionListener,
-			true
+			MoveCollisionListener
 	);
 
 	/* Pop collisions. */
 	AERObjectAttachCollisionListener(
 			objects.balloonInflated,
 			AER_OBJECT_ATTACKCOL,
-			DSPopCollisionListener,
-			true
+			PopCollisionListener
 	);
 
 	return;

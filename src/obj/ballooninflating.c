@@ -31,7 +31,13 @@ static const float SPRITE_SPEED = 0.075f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool DSCreateListener(AERInstance * balloon) {
+static bool CreateListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
 	int32_t spriteIdx;
 	switch (AERRandUIntRange(0, 2)) {
 		case 1:
@@ -41,16 +47,22 @@ static bool DSCreateListener(AERInstance * balloon) {
 		default:
 			spriteIdx = sprites.balloonInflatingRed;
 	}
-	AERInstanceSetSprite(balloon, spriteIdx);
-	AERInstanceSetSpriteSpeed(balloon, SPRITE_SPEED);
+	AERInstanceSetSprite(target, spriteIdx);
+	AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
 
 	return true;
 }
 
-static bool DSDestroyListener(AERInstance * balloon) {
+static bool DestroyListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
 	/* Spawn balloon inflated instance. */
 	float x, y;
-	AERInstanceGetPosition(balloon, &x, &y);
+	AERInstanceGetPosition(target, &x, &y);
 	AERInstance * new = AERInstanceCreate(
 			objects.balloonInflated,
 			x,
@@ -58,7 +70,7 @@ static bool DSDestroyListener(AERInstance * balloon) {
 	);
 
 	/* Set new sprite. */
-	int32_t spriteIdx = AERInstanceGetSprite(balloon);
+	int32_t spriteIdx = AERInstanceGetSprite(target);
 	if (spriteIdx == sprites.balloonInflatingBlue)
 		AERInstanceSetSprite(new, sprites.balloonInflatedBlue);
 	else
@@ -67,8 +79,14 @@ static bool DSDestroyListener(AERInstance * balloon) {
 	return true;
 }
 
-static bool DSAnimationEndListener(AERInstance * balloon) {
-	AERInstanceDestroy(balloon);
+static bool AnimationEndListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
+	AERInstanceDestroy(target);
 
 	return true;
 }
@@ -95,18 +113,15 @@ void RegisterBalloonInflatingObject(void) {
 void RegisterBalloonInflatingListeners(void) {
 	AERObjectAttachCreateListener(
 			objects.balloonInflating,
-			DSCreateListener,
-			true
+			CreateListener
 	);
 	AERObjectAttachDestroyListener(
 			objects.balloonInflating,
-			DSDestroyListener,
-			true
+			DestroyListener
 	);
 	AERObjectAttachAnimationEndListener(
 			objects.balloonInflating,
-			DSAnimationEndListener,
-			true
+			AnimationEndListener
 	);
 
 	return;

@@ -34,32 +34,44 @@ static const float MAX_SPRITE_ANGLE = 20.0f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool DSCreateListener(AERInstance * balloon) {
+static bool CreateListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
 	AERInstanceSetAlarm(
-			balloon,
+			target,
 			conf.alarmBalloonCarcassFade,
 			FADE_DELAY
 	);
 	AERInstanceSetSpriteAngle(
-			balloon,
+			target,
 			AERRandFloatRange(-MAX_SPRITE_ANGLE, MAX_SPRITE_ANGLE)
 	);
 
 	return true;
 }
 
-static bool DSAlarmFadeListener(AERInstance * balloon) {
-	float alpha = AERInstanceGetSpriteAlpha(balloon);
+static bool FadeAlarmListener(
+		AEREventTrapIter * event,
+		AERInstance * target,
+		AERInstance * other
+) {
+	if (!event->next(event, target, other)) return false;
+
+	float alpha = AERInstanceGetSpriteAlpha(target);
 	alpha -= 5.0f / (30.0f * 5.0f);
 	if (alpha > 0.0f) {
-		AERInstanceSetSpriteAlpha(balloon, alpha);
+		AERInstanceSetSpriteAlpha(target, alpha);
 		AERInstanceSetAlarm(
-				balloon,
+				target,
 				conf.alarmBalloonCarcassFade,
 				5
 		);
 	} else {
-		AERInstanceDestroy(balloon);
+		AERInstanceDestroy(target);
 	}
 
 	return true;
@@ -87,14 +99,12 @@ void RegisterBalloonCarcassObject(void) {
 void RegisterBalloonCarcassListeners(void) {
 	AERObjectAttachCreateListener(
 			objects.balloonCarcass,
-			DSCreateListener,
-			true
+			CreateListener
 	);
 	AERObjectAttachAlarmListener(
 			objects.balloonCarcass,
 			conf.alarmBalloonCarcassFade,
-			DSAlarmFadeListener,
-			true
+			FadeAlarmListener
 	);
 
 	return;
