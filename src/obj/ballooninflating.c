@@ -32,12 +32,13 @@ static const float SPRITE_SPEED = 0.075f;
 /* ----- PRIVATE FUNCTIONS ----- */
 
 static bool CreateListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
+	/* Randomly pick sprite. */
 	int32_t spriteIdx;
 	switch (AERRandUIntRange(0, 2)) {
 		case 1:
@@ -54,11 +55,11 @@ static bool CreateListener(
 }
 
 static bool DestroyListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	/* Spawn balloon inflated instance. */
 	float x, y;
@@ -80,11 +81,11 @@ static bool DestroyListener(
 }
 
 static bool AnimationEndListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	AERInstanceDestroy(target);
 

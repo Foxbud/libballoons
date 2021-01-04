@@ -41,11 +41,11 @@ static const int32_t MAX_POP_DELAY = 3;
 /* ----- PRIVATE FUNCTIONS ----- */
 
 static bool CreateListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	AERInstanceSetFriction(target, FRICTION);
 	AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
@@ -54,11 +54,11 @@ static bool CreateListener(
 }
 
 static bool DestroyListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	/* Spawn balloon dying instance. */
 	float x, y;
@@ -80,11 +80,11 @@ static bool DestroyListener(
 }
 
 static bool PopAlarmListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	AERInstanceDestroy(target);
 
@@ -92,11 +92,11 @@ static bool PopAlarmListener(
 }
 
 static bool StepListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	/* Synchronize draw depth. */
 	AERInstanceSyncDepth(target);
@@ -118,18 +118,18 @@ static bool StepListener(
 }
 
 static bool MoveCollisionListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	/* Move balloon away from center of other object. */
-	float xb, yb, xo, yo;
-	AERInstanceGetPosition(target, &xb, &yb);
+	float xt, yt, xo, yo;
+	AERInstanceGetPosition(target, &xt, &yt);
 	AERInstanceGetPosition(other, &xo, &yo);
-	float dx = xb - xo;
-	float dy = yb - yo;
+	float dx = xt - xo;
+	float dy = yt - yo;
 	/*
 	 * If balloon and other object are at the exact same position,
 	 * randomly generate motion.
@@ -149,11 +149,11 @@ static bool MoveCollisionListener(
 }
 
 static bool PopCollisionListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	AERInstanceSetAlarm(
 			target,

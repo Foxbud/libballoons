@@ -24,11 +24,11 @@
 /* ----- PRIVATE FUNCTIONS ----- */
 
 static bool CreateListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	AERInstanceSyncDepth(target);
 

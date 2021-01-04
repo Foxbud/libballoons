@@ -44,6 +44,12 @@ project(${MOD_NAME}
 	HOMEPAGE_URL ${MOD_HOMEPAGE}
 	LANGUAGES C)
 
+# Set cmake defaults.
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	set(CMAKE_INSTALL_PREFIX "lib${MOD_NAME}-${MOD_VERSION}"
+		CACHE PATH "..." FORCE)
+endif()
+
 # Include CPack.
 set(CPACK_PACKAGE_FILE_NAME "lib${MOD_NAME}-${MOD_VERSION}")
 include(CPack)
@@ -51,10 +57,13 @@ include(CPack)
 # Include GenerateExportHeader.
 include(GenerateExportHeader)
 
-# Set cmake defaults.
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-	set(CMAKE_INSTALL_PREFIX "lib${MOD_NAME}-${MOD_VERSION}"
-		CACHE PATH "..." FORCE)
+# Include AERMRE.
+set(AERMRE_SCRIPT_REL "aer/mre/lib/cmake/AERMRETargets.cmake")
+include("$ENV{AERMAN_GAMEDIR}/${AERMRE_SCRIPT_REL}"
+	OPTIONAL
+	RESULT_VARIABLE AERMRE_SCRIPT)
+if("${AERMRE_SCRIPT}" STREQUAL "NOTFOUND")
+	include("$ENV{HOME}/.local/share/Steam/steamapps/common/HyperLightDrifter/${AERMRE_SCRIPT_REL}")
 endif()
 
 # Add mod shared library target.
@@ -76,6 +85,8 @@ target_compile_options(${MOD_NAME}
 target_link_options(${MOD_NAME}
 	PRIVATE -m32
 	PRIVATE -rdynamic)
+target_link_libraries(${MOD_NAME}
+	PRIVATE AERMRE::aermre)
 
 # Add installation target.
 install(FILES

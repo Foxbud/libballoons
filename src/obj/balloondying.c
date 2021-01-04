@@ -31,11 +31,11 @@ static const float SPRITE_SPEED = 0.25f;
 /* ----- PRIVATE FUNCTIONS ----- */
 
 static bool CreateListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
 
@@ -43,11 +43,11 @@ static bool CreateListener(
 }
 
 static bool DestroyListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	/* Spawn balloon carcass instance. */
 	float x, y;
@@ -69,11 +69,11 @@ static bool DestroyListener(
 }
 
 static bool AnimationEndListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	AERInstanceDestroy(target);
 

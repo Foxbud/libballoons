@@ -35,11 +35,11 @@ static const float MAX_SPRITE_ANGLE = 20.0f;
 /* ----- PRIVATE FUNCTIONS ----- */
 
 static bool CreateListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	AERInstanceSetAlarm(
 			target,
@@ -55,11 +55,11 @@ static bool CreateListener(
 }
 
 static bool FadeAlarmListener(
-		AEREventTrapIter * event,
+		AEREventTrapIter * ctx,
 		AERInstance * target,
 		AERInstance * other
 ) {
-	if (!event->next(event, target, other)) return false;
+	if (!ctx->next(ctx, target, other)) return false;
 
 	float alpha = AERInstanceGetSpriteAlpha(target);
 	alpha -= 5.0f / (30.0f * 5.0f);
