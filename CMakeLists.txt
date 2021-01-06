@@ -91,8 +91,8 @@ target_link_libraries(${MOD_NAME}
 # Add installation target.
 install(FILES
 	ModInfo.json
-	LICENSE.assets.txt
-	LICENSE.source.txt
+	LICENSE.txt
+	NOTICE.txt
 	DESTINATION ".")
 install(TARGETS ${MOD_NAME} LIBRARY)
 install(DIRECTORY
