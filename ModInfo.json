@@ -10,22 +10,22 @@
 		{
 			"key": ["keybind", "spawn_balloon"],
 			"description": "Keyboard binding to spawn a balloon.",
-			"default": "66"
+			"default": 66
 		},
 		{
 			"key": ["keybind", "pop_balloons"],
 			"description": "Keyboard binding to pop all balloons.",
-			"default": "80"
+			"default": 80
 		},
 		{
 			"key": ["alarm", "balloon_inflated", "pop"],
 			"description": "Alarm index to use for balloon inflated object pop delay.",
-			"default": "0"
+			"default": 0
 		},
 		{
 			"key": ["alarm", "balloon_carcass", "fade"],
 			"description": "Alarm index to use for balloon carcass object fading.",
-			"default": "0"
+			"default": 0
 		}
 	]
 }
