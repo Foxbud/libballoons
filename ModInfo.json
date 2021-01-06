@@ -8,14 +8,14 @@
 	],
 	"configuration": [
 		{
-			"key": ["keybind", "spawn_balloon"],
+			"key": ["input", "keybind", "spawn_balloon"],
 			"description": "Keyboard binding to spawn a balloon.",
-			"default": 66
+			"default": [160, 66]
 		},
 		{
-			"key": ["keybind", "pop_balloons"],
+			"key": ["input", "keybind", "pop_balloons"],
 			"description": "Keyboard binding to pop all balloons.",
-			"default": 80
+			"default": [160, 80]
 		},
 		{
 			"key": ["alarm", "balloon_inflated", "pop"],

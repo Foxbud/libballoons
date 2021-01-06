@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <stdlib.h>
+#include <string.h>
 
 #include "aer/confman.h"
 #include "aer/err.h"
@@ -31,18 +32,18 @@ ConfVars conf = {0};
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static int32_t ParseInt(
+static int64_t ParseInt(
 		const char * key,
-		int32_t defaultVal,
-		int32_t minVal,
-		int32_t maxVal
+		int64_t defaultVal,
+		int64_t minVal,
+		int64_t maxVal
 ) {
-	uint8_t result = defaultVal;
+	int64_t result = defaultVal;
 
 	aererr = AER_OK;
-	int32_t rawVal = AERConfManGetInt(key);
+	int64_t rawVal = AERConfManGetInt(key);
 	if (aererr == AER_FAILED_LOOKUP) {
-		AERLogWarn(
+		AERLogInfo(
 				"Configuration key \"%s\" not defined. "
 				"Using default value \"%d\".",
 				key,
@@ -56,7 +57,7 @@ static int32_t ParseInt(
 		abort();
 	} else if (rawVal < minVal || rawVal > maxVal) {
 		AERLogErr(
-				"Configuration key \"%s\" must be between "
+				"Configuration key \"%s\" value must be between "
 				"\"%d\" and \"%d\" (inclusive).",
 				key,
 				minVal,
@@ -70,6 +71,78 @@ static int32_t ParseInt(
 	return result;
 }
 
+static int64_t * ParseInts(
+		const char * key,
+		size_t defaultNum,
+		size_t minNum,
+		size_t maxNum,
+		int64_t * defaultVal,
+		int64_t minVal,
+		int64_t maxVal,
+		size_t * actualNum
+) {
+	/* Get number of ints. */
+	aererr = AER_OK;
+	size_t num = AERConfManGetInts(key, 0, NULL);
+	if (aererr == AER_FAILED_LOOKUP) {
+		AERLogInfo(
+				"Configuration key \"%s\" not defined. "
+				"Using default value: [",
+				key
+		);
+		for (uint32_t idx = 0; idx < defaultNum; idx++)
+			AERLogInfo("\t%d,", defaultVal[idx]);
+		AERLogInfo("]");
+		/* Use defaults. */
+		*actualNum = defaultNum;
+		size_t numBytes = defaultNum * sizeof(int64_t);
+		return memcpy(
+				malloc(numBytes),
+				defaultVal,
+				numBytes
+		);
+	} else if (num < minNum || num > maxNum) {
+		AERLogErr(
+				"Configuration key \"%s\" must have between "
+				"\"%d\" and \"%d\" values (inclusive).",
+				key,
+				minNum,
+				maxNum
+		);
+		abort();
+	}
+
+	/* Get ints. */
+	*actualNum = num;
+	int64_t * result = malloc(num * sizeof(int64_t));
+	aererr = AER_OK;
+	AERConfManGetInts(key, num, result);
+	if (aererr == AER_FAILED_PARSE) {
+		AERLogErr(
+				"Configuration key \"%s\" could not be parsed as integers.",
+				key
+		);
+		abort();
+	}
+
+	/* Validate ints. */
+	for (uint32_t idx = 0; idx < num; idx++) {
+		int64_t curInt = result[idx];
+		if (curInt < minVal || curInt > maxVal) {
+			AERLogErr(
+					"Configuration key \"%s\" values must be between "
+					"\"%d\" and \"%d\" (inclusive).",
+					key,
+					minVal,
+					maxVal
+			);
+			abort();
+		}
+	}
+
+	return result;
+}
+
 
 
 /* ----- PUBLIC FUNCTIONS ----- */
@@ -78,27 +151,35 @@ void ConfVarsConstructor(void) {
 	AERLogInfo("Initializing configuration variables...");
 
 	/* Keybindings. */
-	conf.keybindSpawnBalloon = (uint8_t)ParseInt(
-			"keybind.spawn_balloon",
-			'B',
+	conf.keybindSpawnBalloon = ParseInts(
+			"input.keybind.spawn_balloon",
+			2,
+			1,
+			5,
+			(int64_t []){160, 66},
 			0,
-			255
+			255,
+			&conf.sizeKeybindSpawnBalloon
 	);
-	conf.keybindPopBalloons = (uint8_t)ParseInt(
-			"keybind.pop_balloons",
-			'P',
+	conf.keybindPopBalloons = ParseInts(
+			"input.keybind.pop_balloons",
+			2,
+			1,
+			5,
+			(int64_t []){160, 80},
 			0,
-			255
+			255,
+			&conf.sizeKeybindPopBalloons
 	);
 
 	/* Alarm indexes. */
-	conf.alarmBalloonInflatedPop = (uint8_t)ParseInt(
+	conf.alarmBalloonInflatedPop = ParseInt(
 			"alarm.balloon_inflated.pop",
 			0,
 			0,
 			11
 	);
-	conf.alarmBalloonCarcassFade = (uint8_t)ParseInt(
+	conf.alarmBalloonCarcassFade = ParseInt(
 			"alarm.balloon_carcass.fade",
 			0,
 			0,
@@ -111,6 +192,9 @@ void ConfVarsConstructor(void) {
 
 void ConfVarsDestructor(void) {
 	AERLogInfo("Deinitializing configuration variables...");
+
+	free(conf.keybindSpawnBalloon);
+	free(conf.keybindPopBalloons);
 
 	AERLogInfo("Done deinitializing configuration variables.");
 	return;

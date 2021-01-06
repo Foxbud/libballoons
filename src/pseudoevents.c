@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdlib.h>
 
 #include "aer/err.h"
@@ -29,7 +31,20 @@
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-void KeybindSpawnBalloonListener(void) {
+static bool CheckKeybind(
+		size_t keybindSize,
+		const int64_t * keybind,
+		const bool * keysPressed,
+		const bool * keysHeld
+) {
+	uint32_t numHeld = keybindSize - 1;
+	for (uint32_t idx = 0; idx < numHeld; idx++)
+		if (!keysHeld[keybind[idx]]) return false;
+
+	return keysPressed[keybind[numHeld]];
+}
+
+static void KeybindSpawnBalloonListener(void) {
 	/* Get player instance. */
 	AERInstance * player;
 	size_t numPlayers = AERInstanceGetByObject(
@@ -60,7 +75,7 @@ void KeybindSpawnBalloonListener(void) {
 	return;
 }
 
-void KeybindPopBalloonsListener(void) {
+static void KeybindPopBalloonsListener(void) {
 	/* Get all balloon instances. */
 	size_t numBalloons = AERInstanceGetByObject(
 			objects.balloonInflated,
@@ -98,9 +113,26 @@ void KeybindPopBalloonsListener(void) {
 
 void RoomStepListener(void) {
 	const bool * keysPressed = AERGetKeysPressed();
+	const bool * keysHeld = AERGetKeysHeld();
 
-	if (keysPressed[conf.keybindSpawnBalloon]) KeybindSpawnBalloonListener();
-	if (keysPressed[conf.keybindPopBalloons]) KeybindPopBalloonsListener();
+	if (
+			CheckKeybind(
+				conf.sizeKeybindSpawnBalloon,
+				conf.keybindSpawnBalloon,
+				keysPressed,
+				keysHeld
+			)
+	)
+			KeybindSpawnBalloonListener();
+	if (
+			CheckKeybind(
+				conf.sizeKeybindPopBalloons,
+				conf.keybindPopBalloons,
+				keysPressed,
+				keysHeld
+			)
+	)
+			KeybindPopBalloonsListener();
 
 	return;
 }

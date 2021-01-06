@@ -16,6 +16,7 @@
 #ifndef CONFVARS_H
 #define CONFVARS_H
 
+#include <stddef.h>
 #include <stdint.h>
 
 
@@ -23,10 +24,12 @@
 /* ----- PUBLIC TYPES ----- */
 
 typedef struct ConfVars {
-	uint8_t keybindSpawnBalloon;
-	uint8_t keybindPopBalloons;
-	uint8_t alarmBalloonInflatedPop;
-	uint8_t alarmBalloonCarcassFade;
+	int64_t * keybindSpawnBalloon;
+	size_t sizeKeybindSpawnBalloon;
+	int64_t * keybindPopBalloons;
+	size_t sizeKeybindPopBalloons;
+	int64_t alarmBalloonInflatedPop;
+	int64_t alarmBalloonCarcassFade;
 } ConfVars;
 
 
