@@ -15,7 +15,7 @@
  */
 #include <stdlib.h>
 
-#include "aer/envconf.h"
+#include "aer/confman.h"
 #include "aer/err.h"
 #include "aer/log.h"
 
@@ -32,7 +32,7 @@ ConfVars conf = {0};
 /* ----- PRIVATE FUNCTIONS ----- */
 
 static int32_t ParseInt(
-		const char * name,
+		const char * key,
 		int32_t defaultVal,
 		int32_t minVal,
 		int32_t maxVal
@@ -40,25 +40,25 @@ static int32_t ParseInt(
 	uint8_t result = defaultVal;
 
 	aererr = AER_OK;
-	int32_t rawVal = AEREnvConfGetInt(name);
+	int32_t rawVal = AERConfManGetInt(key);
 	if (aererr == AER_FAILED_LOOKUP) {
 		AERLogWarn(
-				"Environment variable \"%s\" not defined. "
+				"Configuration key \"%s\" not defined. "
 				"Using default value \"%d\".",
-				name,
+				key,
 				defaultVal
 		);
 	} else if (aererr == AER_FAILED_PARSE) {
 		AERLogErr(
-				"Environment variable \"%s\" could not be parsed as an integer.",
-				name
+				"Configuration key \"%s\" could not be parsed as an integer.",
+				key
 		);
 		abort();
 	} else if (rawVal < minVal || rawVal > maxVal) {
 		AERLogErr(
-				"Environment variable \"%s\" must be between "
+				"Configuration key \"%s\" must be between "
 				"\"%d\" and \"%d\" (inclusive).",
-				name,
+				key,
 				minVal,
 				maxVal
 		);
@@ -79,13 +79,13 @@ void ConfVarsConstructor(void) {
 
 	/* Keybindings. */
 	conf.keybindSpawnBalloon = (uint8_t)ParseInt(
-			"BALLOONS_KEYBIND_SPAWN_BALLOON",
+			"keybind.spawn_balloon",
 			'B',
 			0,
 			255
 	);
 	conf.keybindPopBalloons = (uint8_t)ParseInt(
-			"BALLOONS_KEYBIND_POP_BALLOONS",
+			"keybind.pop_balloons",
 			'P',
 			0,
 			255
@@ -93,13 +93,13 @@ void ConfVarsConstructor(void) {
 
 	/* Alarm indexes. */
 	conf.alarmBalloonInflatedPop = (uint8_t)ParseInt(
-			"BALLOONS_ALARM_BALLOONINFLATED_POP",
+			"alarm.balloon_inflated.pop",
 			0,
 			0,
 			11
 	);
 	conf.alarmBalloonCarcassFade = (uint8_t)ParseInt(
-			"BALLOONS_ALARM_BALLOONCARCASS_FADE",
+			"alarm.balloon_carcass.fade",
 			0,
 			0,
 			11

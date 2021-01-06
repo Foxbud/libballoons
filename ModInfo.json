@@ -6,26 +6,22 @@
 	"authors": "Garrett Fairburn",
 	"configuration": [
 		{
-			"key": "BALLOONS_KEYBIND_SPAWN_BALLOON",
-			"path": ["keybind", "spawn_balloon"],
+			"key": "keybind.spawn_balloon",
 			"description": "Keyboard binding to spawn a balloon.",
 			"default": "66"
 		},
 		{
-			"key": "BALLOONS_KEYBIND_POP_BALLOONS",
-			"path": ["keybind", "pop_balloons"],
+			"key": "keybind.pop_balloons",
 			"description": "Keyboard binding to pop all balloons.",
 			"default": "80"
 		},
 		{
-			"key": "BALLOONS_ALARM_BALLOONINFLATED_POP",
-			"path": ["alarm", "balloon_inflated", "pop"],
+			"key": "alarm.balloon_inflated.pop",
 			"description": "Alarm index to use for balloon inflated object pop delay.",
 			"default": "0"
 		},
 		{
-			"key": "BALLOONS_ALARM_BALLOONCARCASS_FADE",
-			"path": ["alarm", "balloon_carcass", "pop"],
+			"key": "alarm.balloon_carcass.fade",
 			"description": "Alarm index to use for balloon carcass object fading.",
 			"default": "0"
 		}
