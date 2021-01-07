@@ -1,31 +1,53 @@
 {
-	"name": "balloons",
-	"version": "1.0.0",
-	"description": "Physics-enabled balloons.",
-	"homepage": "fairburn.dev",
-	"authors": [
-		"Garrett Fairburn <garrett@fairburn.dev>"
-	],
-	"configuration": [
-		{
-			"key": ["input", "keybind", "spawn_balloon"],
-			"description": "Keyboard binding to spawn a balloon.",
-			"default": [160, 66]
-		},
-		{
-			"key": ["input", "keybind", "pop_balloons"],
-			"description": "Keyboard binding to pop all balloons.",
-			"default": [160, 80]
-		},
-		{
-			"key": ["alarm", "balloon_inflated", "pop"],
-			"description": "Alarm index to use for balloon inflated object pop delay.",
-			"default": 0
-		},
-		{
-			"key": ["alarm", "balloon_carcass", "fade"],
-			"description": "Alarm index to use for balloon carcass object fading.",
-			"default": 0
-		}
-	]
+  "name": "balloons",
+  "version": "1.0.0",
+  "description": "Physics-enabled balloons.",
+  "homepage": "fairburn.dev",
+  "authors": [
+    "Garrett Fairburn <garrett@fairburn.dev>"
+  ],
+  "configuration": [
+    {
+      "key": [
+        "input",
+        "keybind",
+        "spawn_balloon"
+      ],
+      "description": "Keyboard binding to spawn a balloon.",
+      "default": [
+        160,
+        66
+      ]
+    },
+    {
+      "key": [
+        "input",
+        "keybind",
+        "pop_balloons"
+      ],
+      "description": "Keyboard binding to pop all balloons.",
+      "default": [
+        160,
+        80
+      ]
+    },
+    {
+      "key": [
+        "alarm",
+        "balloon_inflated",
+        "pop"
+      ],
+      "description": "Alarm index to use for balloon inflated object pop delay.",
+      "default": 0
+    },
+    {
+      "key": [
+        "alarm",
+        "balloon_carcass",
+        "fade"
+      ],
+      "description": "Alarm index to use for balloon carcass object fading.",
+      "default": 0
+    }
+  ]
 }
