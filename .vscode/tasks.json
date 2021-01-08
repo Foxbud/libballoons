@@ -4,17 +4,19 @@
     {
       "label": "Generate Debug",
       "type": "shell",
-      "command": "cmake -S . -B build_debug -DCMAKE_BUILD_TYPE=Debug"
+      "command": "cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug",
+      "problemMatcher": []
     },
     {
       "label": "Generate Release",
       "type": "shell",
-      "command": "cmake -S . -B build_release -DCMAKE_BUILD_TYPE=Release"
+      "command": "cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release",
+      "problemMatcher": []
     },
     {
       "label": "Build Debug",
       "type": "shell",
-      "command": "cmake --build build_debug",
+      "command": "cmake --build build/debug",
       "dependsOn": [
         "Generate Debug"
       ],
@@ -27,59 +29,169 @@
     {
       "label": "Build Release",
       "type": "shell",
-      "command": "cmake --build build_release",
+      "command": "cmake --build build/release",
       "dependsOn": [
         "Generate Release"
-      ]
+      ],
+      "problemMatcher": []
     },
     {
       "label": "Package Debug",
       "type": "shell",
-      "command": "cmake --build build_debug --target package",
+      "command": "cmake --build build/debug --target package",
       "dependsOn": [
         "Generate Debug"
-      ]
+      ],
+      "problemMatcher": []
     },
     {
       "label": "Package Release",
       "type": "shell",
-      "command": "cmake --build build_release --target package",
+      "command": "cmake --build build/release --target package",
       "dependsOn": [
         "Generate Release"
-      ]
+      ],
+      "problemMatcher": []
     },
     {
-      "label": "Launch",
-      "type": "shell",
-      "command": "aerman",
-      "args": [
-        "mdk-launch"
-      ],
+      "label": "Prepare Launch",
       "dependsOn": [
-        "Build Debug"
-      ]
+        "Build Debug",
+        "Link Assets",
+        "Create AER Configuration"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
     },
     {
-      "label": "Launch Debug",
-      "type": "shell",
-      "command": "aerman",
-      "args": [
-        "mdk-debug"
-      ],
+      "label": "Clean Launch",
       "dependsOn": [
-        "Build Debug"
-      ]
+        "Clean Assets Directory",
+        "Clean AER Configuration"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
     },
     {
-      "label": "Launch Debug Server",
+      "label": "Ensure AER Directory",
       "type": "shell",
-      "command": "aerman",
+      "command": "mkdir",
       "args": [
-        "mdk-debug-server"
+        "-p",
+        "${env:AER_GAMEDIR}/aer"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "Ensure Assets Directory",
+      "type": "shell",
+      "command": "mkdir",
+      "args": [
+        "-p",
+        "${env:AER_GAMEDIR}/assets/mod"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "Clean Assets Directory",
+      "type": "shell",
+      "command": "rm",
+      "args": [
+        "-rf",
+        "${env:AER_GAMEDIR}/assets/mod"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "Link Assets",
+      "type": "shell",
+      "command": "ln",
+      "args": [
+        "-sf",
+        "${workspaceRoot}/assets",
+        "${env:AER_GAMEDIR}/assets/mod/${config:mdk.modName}"
       ],
       "dependsOn": [
-        "Build Debug"
-      ]
+        "Ensure Assets Directory"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "Create AER Configuration",
+      "type": "shell",
+      "command": "echo",
+      "args": [
+        "mre.mods = [${config:mdk.launchMods}]",
+        ">${env:AER_GAMEDIR}/aer/conf.toml"
+      ],
+      "dependsOn": [
+        "Ensure AER Directory"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "Clean AER Configuration",
+      "type": "shell",
+      "command": "rm",
+      "args": [
+        "-f",
+        "${env:AER_GAMEDIR}/aer/conf.toml"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
     }
   ]
 }

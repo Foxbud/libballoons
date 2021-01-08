@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-# Copyright 2020 the libballoons authors
+# Copyright 2021 the libballoons authors
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,12 +60,7 @@ include(GenerateExportHeader)
 
 # Include AERMRE.
 set(AERMRE_SCRIPT_REL "aer/mre/lib/cmake/AERMRETargets.cmake")
-include("$ENV{AERMAN_GAMEDIR}/${AERMRE_SCRIPT_REL}"
-	OPTIONAL
-	RESULT_VARIABLE AERMRE_SCRIPT)
-if("${AERMRE_SCRIPT}" STREQUAL "NOTFOUND")
-	include("$ENV{HOME}/.local/share/Steam/steamapps/common/HyperLightDrifter/${AERMRE_SCRIPT_REL}")
-endif()
+include("$ENV{AER_GAMEDIR}/${AERMRE_SCRIPT_REL}")
 
 # Add mod shared library target.
 add_library(${MOD_NAME} SHARED ${SRC})

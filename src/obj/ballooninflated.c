@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the libballoons authors
+ * Copyright 2021 the libballoons authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -162,6 +162,8 @@ void RegisterBalloonInflatedListeners(void) {
   /* Pop collisions. */
   AERObjectAttachCollisionListener(objects.balloonInflated,
                                    AER_OBJECT_ATTACKCOL, PopCollisionListener);
+  AERObjectAttachCollisionListener(objects.balloonInflated, AER_OBJECT_BULLET,
+                                   PopCollisionListener);
 
   return;
 }

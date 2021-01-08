@@ -1,6 +1,22 @@
 {
-    "editor.formatOnType": true,
-    "editor.formatOnSave": true,
-    "editor.detectIndentation": false,
-    "editor.tabSize": 2
+  // MDK settings.
+  "mdk": {
+    "modName": "balloons",
+    // Make sure to surround each mod name with escaped double quotes.
+    "launchMods": [
+      "\"${config:mdk.modName}\"",
+    ]
+  },
+  // VSCode settings.
+  "editor.formatOnType": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "C_Cpp.clang_format_sortIncludes": true,
+  "C_Cpp.default.intelliSenseMode": "gcc-x86",
+  "C_Cpp.loggingLevel": "Warning",
+  "files.associations": {
+    "mre.h": "c"
+  }
 }

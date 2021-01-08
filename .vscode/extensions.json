@@ -1,7 +1,7 @@
 {
   "recommendations": [
-    "llvm-vs-code-extensions.vscode-clangd",
     "twxs.cmake",
-    "webfreak.debug"
+    "xaver.clang-format",
+    "ms-vscode.cpptools"
   ]
 }
