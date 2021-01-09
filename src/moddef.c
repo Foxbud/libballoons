@@ -49,9 +49,9 @@ static void ModDestructor(void) {
 MOD_EXPORT AERModDef DefineMod(void) {
   return (AERModDef){.constructor = ModConstructor,
                      .destructor = ModDestructor,
-                     .regSprites = RegisterSprites,
-                     .regObjects = RegisterObjects,
-                     .regObjListeners = RegisterObjectListeners,
+                     .registerSprites = RegisterSprites,
+                     .registerObjects = RegisterObjects,
+                     .registerObjectListeners = RegisterObjectListeners,
                      .roomStepListener = RoomStepListener,
                      .roomChangeListener = NULL};
 }
