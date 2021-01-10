@@ -24,6 +24,7 @@
 #include "aer/object.h"
 
 #include "confvars.h"
+#include "obj/ballooninflated.h"
 #include "objects.h"
 #include "pseudoevents.h"
 
@@ -76,10 +77,9 @@ static void KeybindPopBalloonsListener(void) {
   AERInstance **balloons = malloc(numBalloons * sizeof(AERInstance *));
   AERInstanceGetByObject(objects.balloonInflated, numBalloons, balloons);
 
-  /* Destroy balloons. */
-  for (uint32_t idx = 0; idx < numBalloons; idx++) {
-    AERInstanceDestroy(balloons[idx]);
-  }
+  /* Pop balloons. */
+  for (uint32_t idx = 0; idx < numBalloons; idx++)
+    BalloonInflatedPop(balloons[idx]);
   AERLogInfo("Popped %zu balloon%s.", numBalloons,
              (numBalloons == 1) ? "" : "s");
   free(balloons);

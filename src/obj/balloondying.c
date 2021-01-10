@@ -15,6 +15,7 @@
  */
 #include "aer/instance.h"
 #include "aer/object.h"
+#include "aer/sprite.h"
 
 #include "obj/balloondying.h"
 #include "objects.h"
@@ -69,8 +70,9 @@ static bool AnimationEndListener(AEREventTrapIter *ctx, AERInstance *target,
 /* ----- PUBLIC FUNCTIONS ----- */
 
 void RegisterBalloonDyingObject(void) {
-  objects.balloonDying = AERObjectRegister("BalloonDying", objects.balloonBase,
-                                           -1, -1, 0, true, false, false);
+  objects.balloonDying =
+      AERObjectRegister("BalloonDying", objects.balloonBase, AER_SPRITE_NULL,
+                        AER_SPRITE_NULL, 0, true, false, false);
 
   return;
 }

@@ -16,6 +16,7 @@
 #include "aer/instance.h"
 #include "aer/object.h"
 #include "aer/rand.h"
+#include "aer/sprite.h"
 
 #include "confvars.h"
 #include "obj/ballooncarcass.h"
@@ -62,8 +63,9 @@ static bool FadeAlarmListener(AEREventTrapIter *ctx, AERInstance *target,
 /* ----- PUBLIC FUNCTIONS ----- */
 
 void RegisterBalloonCarcassObject(void) {
-  objects.balloonCarcass = AERObjectRegister(
-      "BalloonCarcass", objects.balloonBase, -1, -1, 0, true, false, false);
+  objects.balloonCarcass =
+      AERObjectRegister("BalloonCarcass", objects.balloonBase, AER_SPRITE_NULL,
+                        AER_SPRITE_NULL, 0, true, false, false);
 
   return;
 }

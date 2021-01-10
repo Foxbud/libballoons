@@ -16,7 +16,11 @@
 #ifndef BALLOONINFLATED_H
 #define BALLOONINFLATED_H
 
+#include "aer/instance.h"
+
 /* ----- PUBLIC FUNCTIONS ----- */
+
+void BalloonInflatedPop(AERInstance *balloon);
 
 void RegisterBalloonInflatedObject(void);
 

@@ -35,6 +35,9 @@ void RegisterSprites(void) {
   sprites.balloonInflatedSolidMask =
       AERSpriteRegister("BalloonInflatedSolidMask",
                         "sprites/balloon/inflated_solid_mask.png", 1, 6, 2);
+  sprites.balloonInflatedHitMask =
+      AERSpriteRegister("BalloonInflatedHitMask",
+                        "sprites/balloon/inflated_hit_mask.png", 1, 6, 40);
   sprites.balloonDyingRed = AERSpriteRegister(
       "BalloonDyingRed", "sprites/balloon/red_dying.png", 3, 6, 40);
   sprites.balloonDyingBlue = AERSpriteRegister(

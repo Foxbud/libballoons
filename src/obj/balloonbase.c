@@ -15,6 +15,7 @@
  */
 #include "aer/instance.h"
 #include "aer/object.h"
+#include "aer/sprite.h"
 
 #include "obj/balloonbase.h"
 #include "objects.h"
@@ -34,8 +35,9 @@ static bool CreateListener(AEREventTrapIter *ctx, AERInstance *target,
 /* ----- PUBLIC FUNCTIONS ----- */
 
 void RegisterBalloonBaseObject(void) {
-  objects.balloonBase = AERObjectRegister("BalloonBase", AER_OBJECT_MASTERCLASS,
-                                          -1, -1, 0, false, false, false);
+  objects.balloonBase =
+      AERObjectRegister("BalloonBase", AER_OBJECT_MASTERCLASS, AER_SPRITE_NULL,
+                        AER_SPRITE_NULL, 0, false, false, false);
 
   return;
 }

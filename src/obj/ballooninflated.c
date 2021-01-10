@@ -15,9 +15,9 @@
  */
 #include <math.h>
 
-#include "aer/instance.h"
 #include "aer/object.h"
 #include "aer/rand.h"
+#include "aer/sprite.h"
 
 #include "confvars.h"
 #include "obj/ballooninflated.h"
@@ -41,8 +41,16 @@ static bool CreateListener(AEREventTrapIter *ctx, AERInstance *target,
   if (!ctx->next(ctx, target, other))
     return false;
 
+  /* Set instance attributes. */
   AERInstanceSetFriction(target, FRICTION);
   AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
+
+  /* Create hit mask. */
+  AERInstance *mask = AERInstanceCreate(objects.balloonInflatedHitMask, 0, 0);
+  AERInstanceGetModLocal(mask, "hitMaskTarget", true)->i =
+      AERInstanceGetId(target);
+  AERInstanceCreateModLocal(target, "hitMask", true, NULL)->i =
+      AERInstanceGetId(mask);
 
   return true;
 }
@@ -63,6 +71,11 @@ static bool DestroyListener(AEREventTrapIter *ctx, AERInstance *target,
     AERInstanceSetSprite(new, sprites.balloonDyingBlue);
   else
     AERInstanceSetSprite(new, sprites.balloonDyingRed);
+
+  /* Destroy hit mask. */
+  AERInstanceDestroy(
+      AERInstanceGetById(AERInstanceGetModLocal(target, "hitMask", true)->i));
+  AERInstanceDestroyModLocal(target, "hitMask", true);
 
   return true;
 }
@@ -97,8 +110,8 @@ static bool StepListener(AEREventTrapIter *ctx, AERInstance *target,
   return true;
 }
 
-static bool MoveCollisionListener(AEREventTrapIter *ctx, AERInstance *target,
-                                  AERInstance *other) {
+static bool SolidCollisionListener(AEREventTrapIter *ctx, AERInstance *target,
+                                   AERInstance *other) {
   if (!ctx->next(ctx, target, other))
     return false;
 
@@ -122,22 +135,18 @@ static bool MoveCollisionListener(AEREventTrapIter *ctx, AERInstance *target,
   return true;
 }
 
-static bool PopCollisionListener(AEREventTrapIter *ctx, AERInstance *target,
-                                 AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
-    return false;
+/* ----- PUBLIC FUNCTIONS ----- */
 
-  AERInstanceSetAlarm(target, conf.alarmBalloonInflatedPop,
+void BalloonInflatedPop(AERInstance *balloon) {
+  AERInstanceSetAlarm(balloon, conf.alarmBalloonInflatedPop,
                       AERRandIntRange(1, MAX_POP_DELAY + 1));
 
-  return true;
+  return;
 }
-
-/* ----- PUBLIC FUNCTIONS ----- */
 
 void RegisterBalloonInflatedObject(void) {
   objects.balloonInflated =
-      AERObjectRegister("BalloonInflated", objects.balloonBase, -1,
+      AERObjectRegister("BalloonInflated", objects.balloonBase, AER_SPRITE_NULL,
                         sprites.balloonInflatedSolidMask, 0, true, true, false);
 
   return;
@@ -150,20 +159,14 @@ void RegisterBalloonInflatedListeners(void) {
                                conf.alarmBalloonInflatedPop, PopAlarmListener);
   AERObjectAttachStepListener(objects.balloonInflated, StepListener);
 
-  /* Move collisions. */
+  /* Solid collisions. */
   AERObjectAttachCollisionListener(
-      objects.balloonInflated, objects.balloonInflated, MoveCollisionListener);
+      objects.balloonInflated, objects.balloonInflated, SolidCollisionListener);
   AERObjectAttachCollisionListener(objects.balloonInflated, AER_OBJECT_CHAR,
-                                   MoveCollisionListener);
+                                   SolidCollisionListener);
   AERObjectAttachCollisionListener(objects.balloonInflated,
                                    AER_OBJECT_PATHFINDOBSTACLE,
-                                   MoveCollisionListener);
-
-  /* Pop collisions. */
-  AERObjectAttachCollisionListener(objects.balloonInflated,
-                                   AER_OBJECT_ATTACKCOL, PopCollisionListener);
-  AERObjectAttachCollisionListener(objects.balloonInflated, AER_OBJECT_BULLET,
-                                   PopCollisionListener);
+                                   SolidCollisionListener);
 
   return;
 }

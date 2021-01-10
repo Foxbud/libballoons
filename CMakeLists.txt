@@ -22,7 +22,8 @@ set(SRC
 	src/sprites.c
 	src/obj/balloonbase.c
 	src/obj/ballooninflating.c
-	src/obj/ballooninflated.c
+  src/obj/ballooninflated.c
+  src/obj/ballooninflatedhitmask.c
 	src/obj/balloondying.c
 	src/obj/ballooncarcass.c)
 

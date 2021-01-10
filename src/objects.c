@@ -18,6 +18,7 @@
 #include "obj/ballooncarcass.h"
 #include "obj/balloondying.h"
 #include "obj/ballooninflated.h"
+#include "obj/ballooninflatedhitmask.h"
 #include "obj/ballooninflating.h"
 
 /* ----- PUBLIC GLOBALS ----- */
@@ -30,6 +31,7 @@ void RegisterObjects(void) {
   RegisterBalloonBaseObject();
   RegisterBalloonInflatingObject();
   RegisterBalloonInflatedObject();
+  RegisterBalloonInflatedHitMaskObject();
   RegisterBalloonDyingObject();
   RegisterBalloonCarcassObject();
 
@@ -40,6 +42,7 @@ void RegisterObjectListeners(void) {
   RegisterBalloonBaseListeners();
   RegisterBalloonInflatingListeners();
   RegisterBalloonInflatedListeners();
+  RegisterBalloonInflatedHitMaskListeners();
   RegisterBalloonDyingListeners();
   RegisterBalloonCarcassListeners();
 

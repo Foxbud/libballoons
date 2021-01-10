@@ -16,6 +16,7 @@
 #include "aer/instance.h"
 #include "aer/object.h"
 #include "aer/rand.h"
+#include "aer/sprite.h"
 
 #include "obj/ballooninflating.h"
 #include "objects.h"
@@ -82,7 +83,8 @@ static bool AnimationEndListener(AEREventTrapIter *ctx, AERInstance *target,
 
 void RegisterBalloonInflatingObject(void) {
   objects.balloonInflating = AERObjectRegister(
-      "BalloonInflating", objects.balloonBase, -1, -1, 0, true, false, false);
+      "BalloonInflating", objects.balloonBase, AER_SPRITE_NULL, AER_SPRITE_NULL,
+      0, true, false, false);
 
   return;
 }
