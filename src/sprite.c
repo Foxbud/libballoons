@@ -15,13 +15,13 @@
  */
 #include "aer/sprite.h"
 
-#include "sprites.h"
+#include "sprite.h"
 
-/* ----- PUBLIC GLOBALS ----- */
+/* ----- INTERNAL GLOBALS ----- */
 
 Sprites sprites = {0};
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterSprites(void) {
   sprites.balloonInflatingRed = AERSpriteRegister(

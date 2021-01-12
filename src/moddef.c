@@ -17,19 +17,19 @@
 
 #include "aer/log.h"
 
-#include "confvars.h"
 #include "export.h"
 #include "moddef.h"
-#include "objects.h"
-#include "pseudoevents.h"
-#include "sprites.h"
+#include "object.h"
+#include "option.h"
+#include "pseudoevent.h"
+#include "sprite.h"
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
 static void ModConstructor(void) {
   AERLogInfo("Initializing mod...");
 
-  ConfVarsConstructor();
+  OptionConstructor();
 
   AERLogInfo("Done initializing mod.");
   return;
@@ -38,7 +38,7 @@ static void ModConstructor(void) {
 static void ModDestructor(void) {
   AERLogInfo("Deinitializing mod...");
 
-  ConfVarsDestructor();
+  OptionDestructor();
 
   AERLogInfo("Done deinitializing mod.");
   return;

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef BALLOONINFLATING_H
-#define BALLOONINFLATING_H
+#ifndef BALLOONDYING_H
+#define BALLOONDYING_H
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
-void RegisterBalloonInflatingObject(void);
+void RegisterBalloonDyingObject(void);
 
-void RegisterBalloonInflatingListeners(void);
+void RegisterBalloonDyingListeners(void);
 
-#endif /* BALLOONINFLATING_H */
+#endif /* BALLOONDYING_H */

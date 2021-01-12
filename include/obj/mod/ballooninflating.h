@@ -13,32 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SPRITES_H
-#define SPRITES_H
+#ifndef BALLOONINFLATING_H
+#define BALLOONINFLATING_H
 
-#include <stdint.h>
+/* ----- INTERNAL FUNCTIONS ----- */
 
-/* ----- PUBLIC TYPES ----- */
+void RegisterBalloonInflatingObject(void);
 
-typedef struct Sprites {
-  int32_t balloonInflatingRed;
-  int32_t balloonInflatingBlue;
-  int32_t balloonInflatedRed;
-  int32_t balloonInflatedBlue;
-  int32_t balloonInflatedSolidMask;
-  int32_t balloonInflatedHitMask;
-  int32_t balloonDyingRed;
-  int32_t balloonDyingBlue;
-  int32_t balloonCarcassRed;
-  int32_t balloonCarcassBlue;
-} Sprites;
+void RegisterBalloonInflatingListeners(void);
 
-/* ----- PUBLIC GLOBALS ------ */
-
-extern Sprites sprites;
-
-/* ----- PUBLIC FUNCTIONS ----- */
-
-void RegisterSprites(void);
-
-#endif /* SPRITES_H */
+#endif /* BALLOONINFLATING_H */

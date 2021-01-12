@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef BALLOONCARCASS_H
-#define BALLOONCARCASS_H
+#ifndef BALLOONINFLATED_H
+#define BALLOONINFLATED_H
 
-/* ----- PUBLIC FUNCTIONS ----- */
+#include "aer/instance.h"
 
-void RegisterBalloonCarcassObject(void);
+/* ----- INTERNAL FUNCTIONS ----- */
 
-void RegisterBalloonCarcassListeners(void);
+void RegisterBalloonInflatedObject(void);
 
-#endif /* BALLOONCARCASS_H */
+void RegisterBalloonInflatedListeners(void);
+
+#endif /* BALLOONINFLATED_H */

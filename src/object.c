@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "objects.h"
-#include "obj/balloonbase.h"
-#include "obj/ballooncarcass.h"
-#include "obj/balloondying.h"
-#include "obj/ballooninflated.h"
-#include "obj/ballooninflatedhitmask.h"
-#include "obj/ballooninflating.h"
+#include "object.h"
+#include "obj/mod/balloonbase.h"
+#include "obj/mod/ballooncarcass.h"
+#include "obj/mod/balloondying.h"
+#include "obj/mod/ballooninflated.h"
+#include "obj/mod/ballooninflatedhitmask.h"
+#include "obj/mod/ballooninflating.h"
 
-/* ----- PUBLIC GLOBALS ----- */
+/* ----- INTERNAL GLOBALS ----- */
 
 Objects objects = {0};
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterObjects(void) {
   RegisterBalloonBaseObject();

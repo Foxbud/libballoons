@@ -18,10 +18,10 @@
 #include "aer/rand.h"
 #include "aer/sprite.h"
 
-#include "confvars.h"
-#include "obj/ballooncarcass.h"
-#include "objects.h"
-#include "sprites.h"
+#include "obj/mod/ballooncarcass.h"
+#include "object.h"
+#include "option.h"
+#include "sprite.h"
 
 /* ----- PRIVATE CONSTANTS ----- */
 
@@ -31,36 +31,36 @@ static const float MAX_SPRITE_ANGLE = 20.0f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool CreateListener(AEREvent *event, AERInstance *self,
                            AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
-  AERInstanceSetAlarm(target, conf.alarmBalloonCarcassFade, FADE_DELAY);
+  AERInstanceSetAlarm(self, opts.alarmBalloonCarcassFade, FADE_DELAY);
   AERInstanceSetSpriteAngle(
-      target, AERRandFloatRange(-MAX_SPRITE_ANGLE, MAX_SPRITE_ANGLE));
+      self, AERRandFloatRange(-MAX_SPRITE_ANGLE, MAX_SPRITE_ANGLE));
 
   return true;
 }
 
-static bool FadeAlarmListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool FadeAlarmListener(AEREvent *event, AERInstance *self,
                               AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
-  float alpha = AERInstanceGetSpriteAlpha(target);
+  float alpha = AERInstanceGetSpriteAlpha(self);
   alpha -= 5.0f / (30.0f * 5.0f);
   if (alpha > 0.0f) {
-    AERInstanceSetSpriteAlpha(target, alpha);
-    AERInstanceSetAlarm(target, conf.alarmBalloonCarcassFade, 5);
+    AERInstanceSetSpriteAlpha(self, alpha);
+    AERInstanceSetAlarm(self, opts.alarmBalloonCarcassFade, 5);
   } else {
-    AERInstanceDestroy(target);
+    AERInstanceDestroy(self);
   }
 
   return true;
 }
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterBalloonCarcassObject(void) {
   objects.balloonCarcass =
@@ -73,7 +73,7 @@ void RegisterBalloonCarcassObject(void) {
 void RegisterBalloonCarcassListeners(void) {
   AERObjectAttachCreateListener(objects.balloonCarcass, CreateListener);
   AERObjectAttachAlarmListener(objects.balloonCarcass,
-                               conf.alarmBalloonCarcassFade, FadeAlarmListener);
+                               opts.alarmBalloonCarcassFade, FadeAlarmListener);
 
   return;
 }

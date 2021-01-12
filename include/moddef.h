@@ -16,7 +16,7 @@
 #ifndef MODDEF_H
 #define MODDEF_H
 
-#include "aer/modman.h"
+#include "aer/mod.h"
 
 /* ----- PUBLIC FUNCTIONS ----- */
 

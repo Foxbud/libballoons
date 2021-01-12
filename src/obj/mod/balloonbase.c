@@ -17,22 +17,22 @@
 #include "aer/object.h"
 #include "aer/sprite.h"
 
-#include "obj/balloonbase.h"
-#include "objects.h"
+#include "obj/mod/balloonbase.h"
+#include "object.h"
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool CreateListener(AEREvent *event, AERInstance *self,
                            AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
-  AERInstanceSyncDepth(target);
+  AERInstanceSyncDepth(self);
 
   return true;
 }
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterBalloonBaseObject(void) {
   objects.balloonBase =

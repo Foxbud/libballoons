@@ -18,15 +18,14 @@
 #include <stdlib.h>
 
 #include "aer/err.h"
+#include "aer/input.h"
 #include "aer/instance.h"
 #include "aer/log.h"
-#include "aer/mre.h"
 #include "aer/object.h"
 
-#include "confvars.h"
-#include "obj/ballooninflated.h"
-#include "objects.h"
-#include "pseudoevents.h"
+#include "object.h"
+#include "option.h"
+#include "pseudoevent.h"
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
@@ -43,7 +42,7 @@ static bool CheckKeybind(size_t keybindSize, const int64_t *keybind,
 static void KeybindSpawnBalloonListener(void) {
   /* Get player instance. */
   AERInstance *player;
-  size_t numPlayers = AERInstanceGetByObject(AER_OBJECT_CHAR, 1, &player);
+  size_t numPlayers = AERInstanceGetByObject(AER_OBJECT_CHAR, true, 1, &player);
   if (numPlayers < 1) {
     AERLogWarn("Could not locate player.");
     return;
@@ -69,17 +68,18 @@ static void KeybindSpawnBalloonListener(void) {
 
 static void KeybindPopBalloonsListener(void) {
   /* Get all balloon instances. */
-  size_t numBalloons = AERInstanceGetByObject(objects.balloonInflated, 0, NULL);
+  size_t numBalloons =
+      AERInstanceGetByObject(objects.balloonInflated, true, 0, NULL);
   if (numBalloons == 0) {
     AERLogWarn("No balloons to pop.");
     return;
   }
   AERInstance **balloons = malloc(numBalloons * sizeof(AERInstance *));
-  AERInstanceGetByObject(objects.balloonInflated, numBalloons, balloons);
+  AERInstanceGetByObject(objects.balloonInflated, true, numBalloons, balloons);
 
   /* Pop balloons. */
   for (uint32_t idx = 0; idx < numBalloons; idx++)
-    BalloonInflatedPop(balloons[idx]);
+    AERInstanceDestroy(balloons[idx]);
   AERLogInfo("Popped %zu balloon%s.", numBalloons,
              (numBalloons == 1) ? "" : "s");
   free(balloons);
@@ -87,16 +87,16 @@ static void KeybindPopBalloonsListener(void) {
   return;
 }
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
 void RoomStepListener(void) {
-  const bool *keysPressed = AERGetKeysPressed();
-  const bool *keysHeld = AERGetKeysHeld();
+  const bool *keysPressed = AERInputGetKeysPressed();
+  const bool *keysHeld = AERInputGetKeysHeld();
 
-  if (CheckKeybind(conf.sizeKeybindSpawnBalloon, conf.keybindSpawnBalloon,
+  if (CheckKeybind(opts.sizeKeybindSpawnBalloon, opts.keybindSpawnBalloon,
                    keysPressed, keysHeld))
     KeybindSpawnBalloonListener();
-  if (CheckKeybind(conf.sizeKeybindPopBalloons, conf.keybindPopBalloons,
+  if (CheckKeybind(opts.sizeKeybindPopBalloons, opts.keybindPopBalloons,
                    keysPressed, keysHeld))
     KeybindPopBalloonsListener();
 

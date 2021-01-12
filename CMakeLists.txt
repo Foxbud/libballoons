@@ -15,17 +15,17 @@ cmake_minimum_required(VERSION 3.19)
 
 # Update this as you add new source files.
 set(SRC
-	src/confvars.c
+	src/option.c
 	src/moddef.c
-	src/objects.c
-	src/pseudoevents.c
-	src/sprites.c
-	src/obj/balloonbase.c
-	src/obj/ballooninflating.c
-  src/obj/ballooninflated.c
-  src/obj/ballooninflatedhitmask.c
-	src/obj/balloondying.c
-	src/obj/ballooncarcass.c)
+	src/object.c
+	src/pseudoevent.c
+	src/sprite.c
+	src/obj/mod/balloonbase.c
+	src/obj/mod/ballooninflating.c
+  src/obj/mod/ballooninflated.c
+  src/obj/mod/ballooninflatedhitmask.c
+	src/obj/mod/balloondying.c
+	src/obj/mod/ballooncarcass.c)
 
 # Read project metadata from ModInfo.json.
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/ModInfo.json" MOD_INFO)
@@ -86,13 +86,28 @@ target_link_libraries(${MOD_NAME}
 	PRIVATE AERMRE::aermre)
 
 # Add installation target.
+install(TARGETS
+  ${MOD_NAME} LIBRARY)
 install(FILES
-	ModInfo.json
-	LICENSE.txt
-	NOTICE.txt
-	DESTINATION ".")
-install(TARGETS ${MOD_NAME} LIBRARY)
-install(DIRECTORY
-	ACKNOWLEDGMENTS
-	assets
-	DESTINATION ".")
+	"${CMAKE_CURRENT_SOURCE_DIR}/ModInfo.json"
+  DESTINATION ".")
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt")
+  install(FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt"
+    DESTINATION ".")
+endif()
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/NOTICE.txt")
+  install(FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/NOTICE.txt"
+    DESTINATION ".")
+endif()
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/assets")
+  install(DIRECTORY
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets"
+    DESTINATION ".")
+endif()
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/ACKNOWLEGMENTS")
+  install(DIRECTORY
+    "${CMAKE_CURRENT_SOURCE_DIR}/ACKNOWLEGMENTS"
+    DESTINATION ".")
+endif()

@@ -17,9 +17,9 @@
 #include "aer/object.h"
 #include "aer/sprite.h"
 
-#include "obj/balloondying.h"
-#include "objects.h"
-#include "sprites.h"
+#include "obj/mod/balloondying.h"
+#include "object.h"
+#include "sprite.h"
 
 /* ----- PRIVATE CONSTANTS ----- */
 
@@ -27,28 +27,28 @@ static const float SPRITE_SPEED = 0.25f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool CreateListener(AEREvent *event, AERInstance *self,
                            AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
-  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
+  AERInstanceSetSpriteSpeed(self, SPRITE_SPEED);
 
   return true;
 }
 
-static bool DestroyListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool DestroyListener(AEREvent *event, AERInstance *self,
                             AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
   /* Spawn balloon carcass instance. */
   float x, y;
-  AERInstanceGetPosition(target, &x, &y);
+  AERInstanceGetPosition(self, &x, &y);
   AERInstance *new = AERInstanceCreate(objects.balloonCarcass, x, y);
 
   /* Set new sprite. */
-  int32_t spriteIdx = AERInstanceGetSprite(target);
+  int32_t spriteIdx = AERInstanceGetSprite(self);
   if (spriteIdx == sprites.balloonDyingBlue)
     AERInstanceSetSprite(new, sprites.balloonCarcassBlue);
   else
@@ -57,17 +57,17 @@ static bool DestroyListener(AEREventTrapIter *ctx, AERInstance *target,
   return true;
 }
 
-static bool AnimationEndListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool AnimationEndListener(AEREvent *event, AERInstance *self,
                                  AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
-  AERInstanceDestroy(target);
+  AERInstanceDestroy(self);
 
   return true;
 }
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterBalloonDyingObject(void) {
   objects.balloonDying =

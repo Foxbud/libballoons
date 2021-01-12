@@ -34,15 +34,6 @@
     {
       "key": [
         "alarm",
-        "balloon_inflated",
-        "pop"
-      ],
-      "description": "Alarm index to use for balloon inflated object pop delay.",
-      "default": 0
-    },
-    {
-      "key": [
-        "alarm",
         "balloon_carcass",
         "fade"
       ],

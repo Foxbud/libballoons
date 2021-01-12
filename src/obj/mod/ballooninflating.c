@@ -18,9 +18,9 @@
 #include "aer/rand.h"
 #include "aer/sprite.h"
 
-#include "obj/ballooninflating.h"
-#include "objects.h"
-#include "sprites.h"
+#include "obj/mod/ballooninflating.h"
+#include "object.h"
+#include "sprite.h"
 
 /* ----- PRIVATE CONSTANTS ----- */
 
@@ -28,9 +28,9 @@ static const float SPRITE_SPEED = 0.075f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool CreateListener(AEREvent *event, AERInstance *self,
                            AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
   /* Randomly pick sprite. */
@@ -43,24 +43,24 @@ static bool CreateListener(AEREventTrapIter *ctx, AERInstance *target,
   default:
     spriteIdx = sprites.balloonInflatingRed;
   }
-  AERInstanceSetSprite(target, spriteIdx);
-  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
+  AERInstanceSetSprite(self, spriteIdx);
+  AERInstanceSetSpriteSpeed(self, SPRITE_SPEED);
 
   return true;
 }
 
-static bool DestroyListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool DestroyListener(AEREvent *event, AERInstance *self,
                             AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
   /* Spawn balloon inflated instance. */
   float x, y;
-  AERInstanceGetPosition(target, &x, &y);
+  AERInstanceGetPosition(self, &x, &y);
   AERInstance *new = AERInstanceCreate(objects.balloonInflated, x, y);
 
   /* Set new sprite. */
-  int32_t spriteIdx = AERInstanceGetSprite(target);
+  int32_t spriteIdx = AERInstanceGetSprite(self);
   if (spriteIdx == sprites.balloonInflatingBlue)
     AERInstanceSetSprite(new, sprites.balloonInflatedBlue);
   else
@@ -69,17 +69,17 @@ static bool DestroyListener(AEREventTrapIter *ctx, AERInstance *target,
   return true;
 }
 
-static bool AnimationEndListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool AnimationEndListener(AEREvent *event, AERInstance *self,
                                  AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
-  AERInstanceDestroy(target);
+  AERInstanceDestroy(self);
 
   return true;
 }
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterBalloonInflatingObject(void) {
   objects.balloonInflating = AERObjectRegister(

@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef PSEUDOEVENTS_H
-#define PSEUDOEVENTS_H
+#ifndef BALLOONBASE_H
+#define BALLOONBASE_H
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
-void RoomStepListener(void);
+void RegisterBalloonBaseObject(void);
 
-#endif /* PSEUDOEVENTS_H */
+void RegisterBalloonBaseListeners(void);
+
+#endif /* BALLOONBASE_H */

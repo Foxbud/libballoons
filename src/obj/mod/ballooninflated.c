@@ -19,10 +19,9 @@
 #include "aer/rand.h"
 #include "aer/sprite.h"
 
-#include "confvars.h"
-#include "obj/ballooninflated.h"
-#include "objects.h"
-#include "sprites.h"
+#include "obj/mod/ballooninflated.h"
+#include "object.h"
+#include "sprite.h"
 
 /* ----- PRIVATE CONSTANTS ----- */
 
@@ -32,92 +31,73 @@ static const float FRICTION = 0.1f;
 
 static const float MAX_MOVE_SPEED = 0.2f;
 
-static const int32_t MAX_POP_DELAY = 3;
-
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool CreateListener(AEREvent *event, AERInstance *self,
                            AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
   /* Set instance attributes. */
-  AERInstanceSetFriction(target, FRICTION);
-  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
+  AERInstanceSetFriction(self, FRICTION);
+  AERInstanceSetSpriteSpeed(self, SPRITE_SPEED);
 
   /* Create hit mask. */
   AERInstance *mask = AERInstanceCreate(objects.balloonInflatedHitMask, 0, 0);
   AERInstanceGetModLocal(mask, "hitMaskTarget", true)->i =
-      AERInstanceGetId(target);
-  AERInstanceCreateModLocal(target, "hitMask", true, NULL)->i =
-      AERInstanceGetId(mask);
+      AERInstanceGetId(self);
 
   return true;
 }
 
-static bool DestroyListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool DestroyListener(AEREvent *event, AERInstance *self,
                             AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
   /* Spawn balloon dying instance. */
   float x, y;
-  AERInstanceGetPosition(target, &x, &y);
+  AERInstanceGetPosition(self, &x, &y);
   AERInstance *new = AERInstanceCreate(objects.balloonDying, x, y);
 
   /* Set new sprite. */
-  int32_t spriteIdx = AERInstanceGetSprite(target);
+  int32_t spriteIdx = AERInstanceGetSprite(self);
   if (spriteIdx == sprites.balloonInflatedBlue)
     AERInstanceSetSprite(new, sprites.balloonDyingBlue);
   else
     AERInstanceSetSprite(new, sprites.balloonDyingRed);
 
-  /* Destroy hit mask. */
-  AERInstanceDestroy(
-      AERInstanceGetById(AERInstanceGetModLocal(target, "hitMask", true)->i));
-  AERInstanceDestroyModLocal(target, "hitMask", true);
-
   return true;
 }
 
-static bool PopAlarmListener(AEREventTrapIter *ctx, AERInstance *target,
-                             AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
-    return false;
-
-  AERInstanceDestroy(target);
-
-  return true;
-}
-
-static bool StepListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool StepListener(AEREvent *event, AERInstance *self,
                          AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
   /* Synchronize draw depth. */
-  AERInstanceSyncDepth(target);
+  AERInstanceSyncDepth(self);
 
   /* Limit speed. */
   float x, y;
-  AERInstanceGetMotion(target, &x, &y);
+  AERInstanceGetMotion(self, &x, &y);
   float speed = sqrtf(x * x + y * y);
   if (speed > MAX_MOVE_SPEED) {
     float coef = MAX_MOVE_SPEED / speed;
-    AERInstanceSetMotion(target, x * coef, y * coef);
+    AERInstanceSetMotion(self, x * coef, y * coef);
   }
 
   return true;
 }
 
-static bool SolidCollisionListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool SolidCollisionListener(AEREvent *event, AERInstance *self,
                                    AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
   /* Move balloon away from center of other object. */
   float xt, yt, xo, yo;
-  AERInstanceGetPosition(target, &xt, &yt);
+  AERInstanceGetPosition(self, &xt, &yt);
   AERInstanceGetPosition(other, &xo, &yo);
   float dx = xt - xo;
   float dy = yt - yo;
@@ -130,19 +110,12 @@ static bool SolidCollisionListener(AEREventTrapIter *ctx, AERInstance *target,
     dy = AERRandFloatRange(-0.5f, 0.5f);
   }
   float coef = MAX_MOVE_SPEED / sqrtf(dx * dx + dy * dy);
-  AERInstanceAddMotion(target, dx * coef, dy * coef);
+  AERInstanceAddMotion(self, dx * coef, dy * coef);
 
   return true;
 }
 
-/* ----- PUBLIC FUNCTIONS ----- */
-
-void BalloonInflatedPop(AERInstance *balloon) {
-  AERInstanceSetAlarm(balloon, conf.alarmBalloonInflatedPop,
-                      AERRandIntRange(1, MAX_POP_DELAY + 1));
-
-  return;
-}
+/* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterBalloonInflatedObject(void) {
   objects.balloonInflated =
@@ -155,8 +128,6 @@ void RegisterBalloonInflatedObject(void) {
 void RegisterBalloonInflatedListeners(void) {
   AERObjectAttachCreateListener(objects.balloonInflated, CreateListener);
   AERObjectAttachDestroyListener(objects.balloonInflated, DestroyListener);
-  AERObjectAttachAlarmListener(objects.balloonInflated,
-                               conf.alarmBalloonInflatedPop, PopAlarmListener);
   AERObjectAttachStepListener(objects.balloonInflated, StepListener);
 
   /* Solid collisions. */

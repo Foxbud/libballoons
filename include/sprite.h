@@ -13,31 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef CONFVARS_H
-#define CONFVARS_H
+#ifndef SPRITE_H
+#define SPRITE_H
 
-#include <stddef.h>
 #include <stdint.h>
 
-/* ----- PUBLIC TYPES ----- */
+/* ----- INTERNAL TYPES ----- */
 
-typedef struct ConfVars {
-  int64_t *keybindSpawnBalloon;
-  size_t sizeKeybindSpawnBalloon;
-  int64_t *keybindPopBalloons;
-  size_t sizeKeybindPopBalloons;
-  int64_t alarmBalloonInflatedPop;
-  int64_t alarmBalloonCarcassFade;
-} ConfVars;
+typedef struct Sprites {
+  int32_t balloonInflatingRed;
+  int32_t balloonInflatingBlue;
+  int32_t balloonInflatedRed;
+  int32_t balloonInflatedBlue;
+  int32_t balloonInflatedSolidMask;
+  int32_t balloonInflatedHitMask;
+  int32_t balloonDyingRed;
+  int32_t balloonDyingBlue;
+  int32_t balloonCarcassRed;
+  int32_t balloonCarcassBlue;
+} Sprites;
 
-/* ----- PUBLIC GLOBALS ----- */
+/* ----- INTERNAL GLOBALS ------ */
 
-extern ConfVars conf;
+extern Sprites sprites;
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
-void ConfVarsConstructor(void);
+void RegisterSprites(void);
 
-void ConfVarsDestructor(void);
-
-#endif /* CONFVARS_H */
+#endif /* SPRITE_H */

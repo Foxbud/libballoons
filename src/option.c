@@ -16,15 +16,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "aer/confman.h"
+#include "aer/conf.h"
 #include "aer/err.h"
 #include "aer/log.h"
 
-#include "confvars.h"
+#include "option.h"
 
-/* ----- PUBLIC GLOBALS ----- */
+/* ----- INTERNAL GLOBALS ----- */
 
-ConfVars conf = {0};
+Options opts = {0};
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
@@ -33,7 +33,7 @@ static int64_t ParseInt(const char *key, int64_t defaultVal, int64_t minVal,
   int64_t result = defaultVal;
 
   aererr = AER_OK;
-  int64_t rawVal = AERConfManGetInt(key);
+  int64_t rawVal = AERConfGetInt(key);
   if (aererr == AER_FAILED_LOOKUP) {
     AERLogInfo("Configuration key \"%s\" not defined. "
                "Using default value \"%d\".",
@@ -59,7 +59,7 @@ static int64_t *ParseInts(const char *key, size_t defaultNum, size_t minNum,
                           int64_t maxVal, size_t *actualNum) {
   /* Get number of ints. */
   aererr = AER_OK;
-  size_t num = AERConfManGetInts(key, 0, NULL);
+  size_t num = AERConfGetInts(key, 0, NULL);
   if (aererr == AER_FAILED_LOOKUP) {
     AERLogInfo("Configuration key \"%s\" not defined. "
                "Using default value: [",
@@ -82,7 +82,7 @@ static int64_t *ParseInts(const char *key, size_t defaultNum, size_t minNum,
   *actualNum = num;
   int64_t *result = malloc(num * sizeof(int64_t));
   aererr = AER_OK;
-  AERConfManGetInts(key, num, result);
+  AERConfGetInts(key, num, result);
   if (aererr == AER_FAILED_PARSE) {
     AERLogErr("Configuration key \"%s\" could not be parsed as integers.", key);
     abort();
@@ -102,35 +102,33 @@ static int64_t *ParseInts(const char *key, size_t defaultNum, size_t minNum,
   return result;
 }
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
-void ConfVarsConstructor(void) {
-  AERLogInfo("Initializing configuration variables...");
+void OptionConstructor(void) {
+  AERLogInfo("Initializing options...");
 
   /* Keybindings. */
-  conf.keybindSpawnBalloon =
+  opts.keybindSpawnBalloon =
       ParseInts("input.keybind.spawn_balloon", 2, 1, 5, (int64_t[]){160, 66}, 0,
-                255, &conf.sizeKeybindSpawnBalloon);
-  conf.keybindPopBalloons =
+                255, &opts.sizeKeybindSpawnBalloon);
+  opts.keybindPopBalloons =
       ParseInts("input.keybind.pop_balloons", 2, 1, 5, (int64_t[]){160, 80}, 0,
-                255, &conf.sizeKeybindPopBalloons);
+                255, &opts.sizeKeybindPopBalloons);
 
   /* Alarm indexes. */
-  conf.alarmBalloonInflatedPop =
-      ParseInt("alarm.balloon_inflated.pop", 0, 0, 11);
-  conf.alarmBalloonCarcassFade =
+  opts.alarmBalloonCarcassFade =
       ParseInt("alarm.balloon_carcass.fade", 0, 0, 11);
 
-  AERLogInfo("Done initializing configuration variables.");
+  AERLogInfo("Done initializing options.");
   return;
 }
 
-void ConfVarsDestructor(void) {
-  AERLogInfo("Deinitializing configuration variables...");
+void OptionDestructor(void) {
+  AERLogInfo("Deinitializing options...");
 
-  free(conf.keybindSpawnBalloon);
-  free(conf.keybindPopBalloons);
+  free(opts.keybindSpawnBalloon);
+  free(opts.keybindPopBalloons);
 
-  AERLogInfo("Done deinitializing configuration variables.");
+  AERLogInfo("Done deinitializing options.");
   return;
 }

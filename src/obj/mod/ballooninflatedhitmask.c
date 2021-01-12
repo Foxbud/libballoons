@@ -17,62 +17,66 @@
 #include "aer/object.h"
 #include "aer/sprite.h"
 
-#include "obj/ballooninflated.h"
-#include "obj/ballooninflatedhitmask.h"
-#include "objects.h"
-#include "sprites.h"
+#include "obj/mod/ballooninflatedhitmask.h"
+#include "object.h"
+#include "sprite.h"
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool CreateListener(AEREvent *event, AERInstance *self,
                            AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
-  AERInstanceCreateModLocal(target, "hitMaskTarget", true, NULL)->i = -1;
+  AERInstanceCreateModLocal(self, "hitMaskTarget", true, NULL)->i = -1;
 
   return true;
 }
 
-static bool DestroyListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool DestroyListener(AEREvent *event, AERInstance *self,
                             AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
-  AERInstanceDestroyModLocal(target, "hitMaskTarget", true);
+  AERInstanceDestroyModLocal(self, "hitMaskTarget", true);
 
   return true;
 }
 
-static bool PostStepListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool PostStepListener(AEREvent *event, AERInstance *self,
                              AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  /* Destroy self if balloon inflated is gone. */
+  AERInstance *balloon = AERInstanceGetById(
+      AERInstanceGetModLocal(self, "hitMaskTarget", true)->i);
+  if (!balloon) {
+    AERInstanceDestroy(self);
+    return false;
+  }
+
+  if (!event->handle(event, self, other))
     return false;
 
   /* Synchronize position with balloon inflated. */
   float x = 0.0f, y = 0.0f;
-  AERInstanceGetPosition(
-      AERInstanceGetById(
-          AERInstanceGetModLocal(target, "hitMaskTarget", true)->i),
-      &x, &y);
-  AERInstanceSetPosition(target, x, y);
+  AERInstanceGetPosition(balloon, &x, &y);
+  AERInstanceSetPosition(self, x, y);
 
   return true;
 }
 
-static bool HitCollisionListener(AEREventTrapIter *ctx, AERInstance *target,
+static bool HitCollisionListener(AEREvent *event, AERInstance *self,
                                  AERInstance *other) {
-  if (!ctx->next(ctx, target, other))
+  if (!event->handle(event, self, other))
     return false;
 
   /* Pop balloon inflated. */
-  BalloonInflatedPop(AERInstanceGetById(
-      AERInstanceGetModLocal(target, "hitMaskTarget", true)->i));
+  AERInstanceDestroy(AERInstanceGetById(
+      AERInstanceGetModLocal(self, "hitMaskTarget", true)->i));
 
   return true;
 }
 
-/* ----- PUBLIC FUNCTIONS ----- */
+/* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterBalloonInflatedHitMaskObject(void) {
   objects.balloonInflatedHitMask = AERObjectRegister(

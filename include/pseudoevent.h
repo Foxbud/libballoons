@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef BALLOONINFLATED_H
-#define BALLOONINFLATED_H
+#ifndef PSEUDOEVENT_H
+#define PSEUDOEVENT_H
 
-#include "aer/instance.h"
+/* ----- INTERNAL FUNCTIONS ----- */
 
-/* ----- PUBLIC FUNCTIONS ----- */
+void RoomStepListener(void);
 
-void BalloonInflatedPop(AERInstance *balloon);
-
-void RegisterBalloonInflatedObject(void);
-
-void RegisterBalloonInflatedListeners(void);
-
-#endif /* BALLOONINFLATED_H */
+#endif /* PSEUDOEVENT_H */

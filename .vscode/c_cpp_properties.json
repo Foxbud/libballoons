@@ -4,6 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/include/**",
+                "${workspaceFolder}/build/debug/include/**",
                 "${env:AER_GAMEDIR}/aer/mre/include/**"
             ],
             "defines": [],

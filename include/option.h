@@ -13,13 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef BALLOONBASE_H
-#define BALLOONBASE_H
+#ifndef CONFVARS_H
+#define CONFVARS_H
 
-/* ----- PUBLIC FUNCTIONS ----- */
+#include <stddef.h>
+#include <stdint.h>
 
-void RegisterBalloonBaseObject(void);
+/* ----- INTERNAL TYPES ----- */
 
-void RegisterBalloonBaseListeners(void);
+typedef struct Options {
+  int64_t *keybindSpawnBalloon;
+  size_t sizeKeybindSpawnBalloon;
+  int64_t *keybindPopBalloons;
+  size_t sizeKeybindPopBalloons;
+  int64_t alarmBalloonCarcassFade;
+} Options;
 
-#endif /* BALLOONBASE_H */
+/* ----- INTERNAL GLOBALS ----- */
+
+extern Options opts;
+
+/* ----- INTERNAL FUNCTIONS ----- */
+
+void OptionConstructor(void);
+
+void OptionDestructor(void);
+
+#endif /* CONFVARS_H */

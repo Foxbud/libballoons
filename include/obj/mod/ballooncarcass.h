@@ -13,30 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef OBJECTS_H
-#define OBJECTS_H
+#ifndef BALLOONCARCASS_H
+#define BALLOONCARCASS_H
 
-#include <stdint.h>
+/* ----- INTERNAL FUNCTIONS ----- */
 
-/* ----- PUBLIC TYPES ----- */
+void RegisterBalloonCarcassObject(void);
 
-typedef struct Objects {
-  int32_t balloonBase;
-  int32_t balloonInflating;
-  int32_t balloonInflated;
-  int32_t balloonInflatedHitMask;
-  int32_t balloonDying;
-  int32_t balloonCarcass;
-} Objects;
+void RegisterBalloonCarcassListeners(void);
 
-/* ----- PUBLIC GLOBALS ------ */
-
-extern Objects objects;
-
-/* ----- PUBLIC FUNCTIONS ----- */
-
-void RegisterObjects(void);
-
-void RegisterObjectListeners(void);
-
-#endif /* OBJECTS_H */
+#endif /* BALLOONCARCASS_H */
