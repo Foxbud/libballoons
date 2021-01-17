@@ -15,35 +15,31 @@
  */
 #include "aer/instance.h"
 #include "aer/object.h"
-#include "aer/sprite.h"
 
-#include "obj/mod/balloonbase.h"
+#include "obj/hld/enemy.h"
 #include "object.h"
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREvent *event, AERInstance *target,
-                           AERInstance *other) {
+static bool DestroyListener(AEREvent *event, AERInstance *target,
+                            AERInstance *other) {
   if (!event->handle(event, target, other))
     return false;
 
-  AERInstanceSyncDepth(target);
+  /* Get enemy position. */
+  float x, y;
+  AERInstanceGetPosition(target, &x, &y);
+
+  /* Spawn balloon instance. */
+  AERInstanceCreate(objects.balloonInflating, x, y);
 
   return true;
 }
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
-void RegisterBalloonBaseObject(void) {
-  objects.balloonBase =
-      AERObjectRegister("BalloonBase", AER_OBJECT_MASTERCLASS, AER_SPRITE_NULL,
-                        AER_SPRITE_NULL, 0, false, false, false);
-
-  return;
-}
-
-void RegisterBalloonBaseListeners(void) {
-  AERObjectAttachCreateListener(objects.balloonBase, CreateListener);
+void RegisterEnemyListeners(void) {
+  AERObjectAttachCreateListener(AER_OBJECT_ENEMY, DestroyListener);
 
   return;
 }

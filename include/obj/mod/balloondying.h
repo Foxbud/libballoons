@@ -16,7 +16,13 @@
 #ifndef BALLOONDYING_H
 #define BALLOONDYING_H
 
+#include <stdbool.h>
+
+#include "aer/instance.h"
+
 /* ----- INTERNAL FUNCTIONS ----- */
+
+void BalloonDyingSetPaused(AERInstance *target, bool paused);
 
 void RegisterBalloonDyingObject(void);
 

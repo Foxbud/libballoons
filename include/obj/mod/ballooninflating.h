@@ -16,7 +16,13 @@
 #ifndef BALLOONINFLATING_H
 #define BALLOONINFLATING_H
 
+#include <stdbool.h>
+
+#include "aer/instance.h"
+
 /* ----- INTERNAL FUNCTIONS ----- */
+
+void BalloonInflatingSetPaused(AERInstance *target, bool paused);
 
 void RegisterBalloonInflatingObject(void);
 

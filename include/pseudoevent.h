@@ -16,8 +16,12 @@
 #ifndef PSEUDOEVENT_H
 #define PSEUDOEVENT_H
 
+#include <stdbool.h>
+
 /* ----- INTERNAL FUNCTIONS ----- */
 
-void RoomStepListener(void);
+void GameStepListener(void);
+
+void GamePauseListener(bool paused);
 
 #endif /* PSEUDOEVENT_H */

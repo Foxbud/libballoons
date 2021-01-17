@@ -19,7 +19,8 @@ set(SRC
 	src/moddef.c
 	src/object.c
 	src/pseudoevent.c
-	src/sprite.c
+  src/sprite.c
+  src/obj/hld/enemy.c
 	src/obj/mod/balloonbase.c
 	src/obj/mod/ballooninflating.c
   src/obj/mod/ballooninflated.c

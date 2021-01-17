@@ -17,12 +17,16 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include "aer/core.h"
 #include "aer/err.h"
 #include "aer/input.h"
 #include "aer/instance.h"
 #include "aer/log.h"
 #include "aer/object.h"
 
+#include "obj/mod/balloondying.h"
+#include "obj/mod/ballooninflated.h"
+#include "obj/mod/ballooninflating.h"
 #include "object.h"
 #include "option.h"
 #include "pseudoevent.h"
@@ -41,7 +45,7 @@ static bool CheckKeybind(size_t keybindSize, const int64_t *keybind,
 
 static void KeybindSpawnBalloonListener(void) {
   /* Get player instance. */
-  AERInstance *player;
+  AERInstance *player = NULL;
   size_t numPlayers = AERInstanceGetByObject(AER_OBJECT_CHAR, true, 1, &player);
   if (numPlayers < 1) {
     AERLogWarn("Could not locate player.");
@@ -89,7 +93,10 @@ static void KeybindPopBalloonsListener(void) {
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
-void RoomStepListener(void) {
+void GameStepListener(void) {
+  if (AERGetPaused())
+    return;
+
   const bool *keysPressed = AERInputGetKeysPressed();
   const bool *keysHeld = AERInputGetKeysHeld();
 
@@ -100,5 +107,34 @@ void RoomStepListener(void) {
                    keysPressed, keysHeld))
     KeybindPopBalloonsListener();
 
+  return;
+}
+
+void GamePauseListener(bool paused) {
+  size_t numInsts;
+  AERInstance **insts = NULL;
+
+  numInsts = AERInstanceGetByObject(objects.balloonInflating, true, 0, NULL);
+  insts = malloc(numInsts * sizeof(AERInstance *));
+  AERInstanceGetByObject(objects.balloonInflating, true, numInsts, insts);
+  for (uint32_t idx = 0; idx < numInsts; idx++)
+    BalloonInflatingSetPaused(insts[idx], paused);
+  free(insts);
+
+  numInsts = AERInstanceGetByObject(objects.balloonInflated, true, 0, NULL);
+  insts = malloc(numInsts * sizeof(AERInstance *));
+  AERInstanceGetByObject(objects.balloonInflated, true, numInsts, insts);
+  for (uint32_t idx = 0; idx < numInsts; idx++)
+    BalloonInflatedSetPaused(insts[idx], paused);
+  free(insts);
+
+  numInsts = AERInstanceGetByObject(objects.balloonDying, true, 0, NULL);
+  insts = malloc(numInsts * sizeof(AERInstance *));
+  AERInstanceGetByObject(objects.balloonDying, true, numInsts, insts);
+  for (uint32_t idx = 0; idx < numInsts; idx++)
+    BalloonDyingSetPaused(insts[idx], paused);
+  free(insts);
+
+  insts = NULL;
   return;
 }

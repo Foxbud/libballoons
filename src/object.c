@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "object.h"
+#include "obj/hld/enemy.h"
 #include "obj/mod/balloonbase.h"
 #include "obj/mod/ballooncarcass.h"
 #include "obj/mod/balloondying.h"
@@ -39,6 +40,10 @@ void RegisterObjects(void) {
 }
 
 void RegisterObjectListeners(void) {
+  /* Vanilla object listeners. */
+  RegisterEnemyListeners();
+
+  /* Mod object listeners. */
   RegisterBalloonBaseListeners();
   RegisterBalloonInflatingListeners();
   RegisterBalloonInflatedListeners();

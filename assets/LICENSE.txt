@@ -7,5 +7,6 @@ assets/sprites/balloon/inflated_solid_mask.png
 assets/sprites/balloon/blue_inflating.png
 assets/sprites/balloon/red_inflating.png
 assets/sprites/balloon/red_inflated.png
+assets/sprites/balloon/inflated_hit_mask.png
 assets/sprites/balloon/blue_dying.png
 assets/sprites/balloon/blue_inflated.png

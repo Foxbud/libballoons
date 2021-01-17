@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "aer/instance.h"
 #include "aer/object.h"
 #include "aer/rand.h"
 #include "aer/sprite.h"
@@ -28,9 +27,9 @@ static const float SPRITE_SPEED = 0.075f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREvent *event, AERInstance *self,
+static bool CreateListener(AEREvent *event, AERInstance *target,
                            AERInstance *other) {
-  if (!event->handle(event, self, other))
+  if (!event->handle(event, target, other))
     return false;
 
   /* Randomly pick sprite. */
@@ -43,24 +42,24 @@ static bool CreateListener(AEREvent *event, AERInstance *self,
   default:
     spriteIdx = sprites.balloonInflatingRed;
   }
-  AERInstanceSetSprite(self, spriteIdx);
-  AERInstanceSetSpriteSpeed(self, SPRITE_SPEED);
+  AERInstanceSetSprite(target, spriteIdx);
+  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
 
   return true;
 }
 
-static bool DestroyListener(AEREvent *event, AERInstance *self,
+static bool DestroyListener(AEREvent *event, AERInstance *target,
                             AERInstance *other) {
-  if (!event->handle(event, self, other))
+  if (!event->handle(event, target, other))
     return false;
 
   /* Spawn balloon inflated instance. */
   float x, y;
-  AERInstanceGetPosition(self, &x, &y);
+  AERInstanceGetPosition(target, &x, &y);
   AERInstance *new = AERInstanceCreate(objects.balloonInflated, x, y);
 
   /* Set new sprite. */
-  int32_t spriteIdx = AERInstanceGetSprite(self);
+  int32_t spriteIdx = AERInstanceGetSprite(target);
   if (spriteIdx == sprites.balloonInflatingBlue)
     AERInstanceSetSprite(new, sprites.balloonInflatedBlue);
   else
@@ -69,17 +68,23 @@ static bool DestroyListener(AEREvent *event, AERInstance *self,
   return true;
 }
 
-static bool AnimationEndListener(AEREvent *event, AERInstance *self,
+static bool AnimationEndListener(AEREvent *event, AERInstance *target,
                                  AERInstance *other) {
-  if (!event->handle(event, self, other))
+  if (!event->handle(event, target, other))
     return false;
 
-  AERInstanceDestroy(self);
+  AERInstanceDestroy(target);
 
   return true;
 }
 
 /* ----- INTERNAL FUNCTIONS ----- */
+
+void BalloonInflatingSetPaused(AERInstance *target, bool paused) {
+  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED * !paused);
+
+  return;
+}
 
 void RegisterBalloonInflatingObject(void) {
   objects.balloonInflating = AERObjectRegister(

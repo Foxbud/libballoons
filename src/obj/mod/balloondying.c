@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "aer/instance.h"
 #include "aer/object.h"
 #include "aer/sprite.h"
 
@@ -27,28 +26,28 @@ static const float SPRITE_SPEED = 0.25f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREvent *event, AERInstance *self,
+static bool CreateListener(AEREvent *event, AERInstance *target,
                            AERInstance *other) {
-  if (!event->handle(event, self, other))
+  if (!event->handle(event, target, other))
     return false;
 
-  AERInstanceSetSpriteSpeed(self, SPRITE_SPEED);
+  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
 
   return true;
 }
 
-static bool DestroyListener(AEREvent *event, AERInstance *self,
+static bool DestroyListener(AEREvent *event, AERInstance *target,
                             AERInstance *other) {
-  if (!event->handle(event, self, other))
+  if (!event->handle(event, target, other))
     return false;
 
   /* Spawn balloon carcass instance. */
   float x, y;
-  AERInstanceGetPosition(self, &x, &y);
+  AERInstanceGetPosition(target, &x, &y);
   AERInstance *new = AERInstanceCreate(objects.balloonCarcass, x, y);
 
   /* Set new sprite. */
-  int32_t spriteIdx = AERInstanceGetSprite(self);
+  int32_t spriteIdx = AERInstanceGetSprite(target);
   if (spriteIdx == sprites.balloonDyingBlue)
     AERInstanceSetSprite(new, sprites.balloonCarcassBlue);
   else
@@ -57,17 +56,23 @@ static bool DestroyListener(AEREvent *event, AERInstance *self,
   return true;
 }
 
-static bool AnimationEndListener(AEREvent *event, AERInstance *self,
+static bool AnimationEndListener(AEREvent *event, AERInstance *target,
                                  AERInstance *other) {
-  if (!event->handle(event, self, other))
+  if (!event->handle(event, target, other))
     return false;
 
-  AERInstanceDestroy(self);
+  AERInstanceDestroy(target);
 
   return true;
 }
 
 /* ----- INTERNAL FUNCTIONS ----- */
+
+void BalloonDyingSetPaused(AERInstance *target, bool paused) {
+  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED * !paused);
+
+  return;
+}
 
 void RegisterBalloonDyingObject(void) {
   objects.balloonDying =

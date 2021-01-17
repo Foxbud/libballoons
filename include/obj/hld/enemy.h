@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef BALLOONINFLATED_H
-#define BALLOONINFLATED_H
-
-#include <stdbool.h>
-
-#include "aer/instance.h"
+#ifndef ENEMY_H
+#define ENEMY_H
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
-void BalloonInflatedSetPaused(AERInstance *target, bool paused);
+void RegisterEnemyListeners(void);
 
-void RegisterBalloonInflatedObject(void);
-
-void RegisterBalloonInflatedListeners(void);
-
-#endif /* BALLOONINFLATED_H */
+#endif /* ENEMY_H */

@@ -46,12 +46,14 @@ static void ModDestructor(void) {
 
 /* ----- PUBLIC FUNCTIONS ----- */
 
-MOD_EXPORT AERModDef DefineMod(void) {
-  return (AERModDef){.constructor = ModConstructor,
-                     .destructor = ModDestructor,
-                     .registerSprites = RegisterSprites,
-                     .registerObjects = RegisterObjects,
-                     .registerObjectListeners = RegisterObjectListeners,
-                     .roomStepListener = RoomStepListener,
-                     .roomChangeListener = NULL};
+MOD_EXPORT void DefineMod(AERModDef *def) {
+  def->constructor = ModConstructor;
+  def->destructor = ModDestructor;
+  def->registerSprites = RegisterSprites;
+  def->registerObjects = RegisterObjects;
+  def->registerObjectListeners = RegisterObjectListeners;
+  def->gameStepListener = GameStepListener;
+  def->gamePauseListener = GamePauseListener;
+
+  return;
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "aer/core.h"
 #include "aer/instance.h"
 #include "aer/object.h"
 #include "aer/rand.h"
@@ -31,30 +32,31 @@ static const float MAX_SPRITE_ANGLE = 20.0f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREvent *event, AERInstance *self,
+static bool CreateListener(AEREvent *event, AERInstance *target,
                            AERInstance *other) {
-  if (!event->handle(event, self, other))
+  if (!event->handle(event, target, other))
     return false;
 
-  AERInstanceSetAlarm(self, opts.alarmBalloonCarcassFade, FADE_DELAY);
+  AERInstanceSetAlarm(target, opts.alarmBalloonCarcassFade, FADE_DELAY);
   AERInstanceSetSpriteAngle(
-      self, AERRandFloatRange(-MAX_SPRITE_ANGLE, MAX_SPRITE_ANGLE));
+      target, AERRandFloatRange(-MAX_SPRITE_ANGLE, MAX_SPRITE_ANGLE));
 
   return true;
 }
 
-static bool FadeAlarmListener(AEREvent *event, AERInstance *self,
+static bool FadeAlarmListener(AEREvent *event, AERInstance *target,
                               AERInstance *other) {
-  if (!event->handle(event, self, other))
+  if (!event->handle(event, target, other))
     return false;
 
-  float alpha = AERInstanceGetSpriteAlpha(self);
-  alpha -= 5.0f / (30.0f * 5.0f);
+  float alpha = AERInstanceGetSpriteAlpha(target);
+  if (!AERGetPaused())
+    alpha -= 5.0f / (30.0f * 5.0f);
   if (alpha > 0.0f) {
-    AERInstanceSetSpriteAlpha(self, alpha);
-    AERInstanceSetAlarm(self, opts.alarmBalloonCarcassFade, 5);
+    AERInstanceSetSpriteAlpha(target, alpha);
+    AERInstanceSetAlarm(target, opts.alarmBalloonCarcassFade, 5);
   } else {
-    AERInstanceDestroy(self);
+    AERInstanceDestroy(target);
   }
 
   return true;
