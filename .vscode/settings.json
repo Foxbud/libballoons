@@ -14,11 +14,9 @@
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
   "C_Cpp.clang_format_sortIncludes": true,
+  "C_Cpp.default.compilerPath": "/usr/bin/gcc",
   "C_Cpp.default.intelliSenseMode": "gcc-x86",
   "C_Cpp.loggingLevel": "Warning",
-  "files.associations": {
-    "mre.h": "c"
-  },
   "cSpell.words": [
     "aererr",
     "coef",
@@ -26,5 +24,5 @@
     "insts",
     "keybind",
     "num"
-  ]
+  ],
 }

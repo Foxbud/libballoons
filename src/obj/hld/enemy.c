@@ -39,7 +39,7 @@ static bool DestroyListener(AEREvent *event, AERInstance *target,
 /* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterEnemyListeners(void) {
-  AERObjectAttachCreateListener(AER_OBJECT_ENEMY, DestroyListener);
+  AERObjectAttachDestroyListener(AER_OBJECT_ENEMY, DestroyListener);
 
   return;
 }

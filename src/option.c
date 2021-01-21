@@ -22,6 +22,12 @@
 
 #include "option.h"
 
+/* ----- PRIVATE GLOBALS ----- */
+
+static const int64_t keybindSpawnBalloonDef[] = {160, 66};
+
+static const int64_t keybindPopBalloonsDef[] = {160, 80};
+
 /* ----- INTERNAL GLOBALS ----- */
 
 Options opts = {0};
@@ -55,8 +61,8 @@ static int64_t ParseInt(const char *key, int64_t defaultVal, int64_t minVal,
 }
 
 static int64_t *ParseInts(const char *key, size_t defaultNum, size_t minNum,
-                          size_t maxNum, int64_t *defaultVal, int64_t minVal,
-                          int64_t maxVal, size_t *actualNum) {
+                          size_t maxNum, const int64_t *defaultVal,
+                          int64_t minVal, int64_t maxVal, size_t *actualNum) {
   /* Get number of ints. */
   aererr = AER_OK;
   size_t num = AERConfGetInts(key, 0, NULL);
@@ -109,11 +115,13 @@ void OptionConstructor(void) {
 
   /* Keybindings. */
   opts.keybindSpawnBalloon =
-      ParseInts("input.keybind.spawn_balloon", 2, 1, 5, (int64_t[]){160, 66}, 0,
-                255, &opts.sizeKeybindSpawnBalloon);
+      ParseInts("input.keybind.spawn_balloon",
+                sizeof(keybindSpawnBalloonDef) / sizeof(int64_t), 1, 5,
+                keybindSpawnBalloonDef, 0, 255, &opts.sizeKeybindSpawnBalloon);
   opts.keybindPopBalloons =
-      ParseInts("input.keybind.pop_balloons", 2, 1, 5, (int64_t[]){160, 80}, 0,
-                255, &opts.sizeKeybindPopBalloons);
+      ParseInts("input.keybind.pop_balloons",
+                sizeof(keybindPopBalloonsDef) / sizeof(int64_t), 1, 5,
+                keybindPopBalloonsDef, 0, 255, &opts.sizeKeybindPopBalloons);
 
   /* Alarm indexes. */
   opts.alarmBalloonCarcassFade =
