@@ -1,12 +1,28 @@
 {
   "name": "balloons",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Physics-enabled balloons.",
   "homepage": "fairburn.dev",
   "authors": [
     "Garrett Fairburn <garrett@fairburn.dev>"
   ],
   "configuration": [
+    {
+      "key": [
+        "enable",
+        "keybinds"
+      ],
+      "description": "Whether or not keyboard bindings can be used to spawn and pop balloons.",
+      "default": true
+    },
+    {
+      "key": [
+        "enable",
+        "enemyBalloons"
+      ],
+      "description": "Whether or not enemies spawn balloons when defeated.",
+      "default": true
+    },
     {
       "key": [
         "input",

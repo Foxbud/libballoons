@@ -34,6 +34,26 @@ Options opts = {0};
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
+static bool ParseBool(const char *key, bool defaultVal) {
+  bool result = defaultVal;
+
+  aererr = AER_OK;
+  bool rawVal = AERConfGetBool(key);
+  if (aererr == AER_FAILED_LOOKUP) {
+    AERLogInfo("Configuration key \"%s\" not defined. "
+               "Using default value \"%s\".",
+               key, (defaultVal) ? "true" : "false");
+  } else if (aererr == AER_FAILED_PARSE) {
+    AERLogErr("Configuration key \"%s\" could not be parsed as a boolean.",
+              key);
+    abort();
+  } else {
+    result = rawVal;
+  }
+
+  return result;
+}
+
 static int64_t ParseInt(const char *key, int64_t defaultVal, int64_t minVal,
                         int64_t maxVal) {
   int64_t result = defaultVal;
@@ -112,6 +132,10 @@ static int64_t *ParseInts(const char *key, size_t defaultNum, size_t minNum,
 
 void OptionConstructor(void) {
   AERLogInfo("Initializing options...");
+
+  /* Enables. */
+  opts.enableKeybinds = ParseBool("enable.keybinds", true);
+  opts.enableEnemyBalloons = ParseBool("enable.enemyBalloons", true);
 
   /* Keybindings. */
   opts.keybindSpawnBalloon =

@@ -21,6 +21,7 @@
 #include "obj/mod/ballooninflated.h"
 #include "obj/mod/ballooninflatedhitmask.h"
 #include "obj/mod/ballooninflating.h"
+#include "option.h"
 
 /* ----- INTERNAL GLOBALS ----- */
 
@@ -41,7 +42,8 @@ void RegisterObjects(void) {
 
 void RegisterObjectListeners(void) {
   /* Vanilla object listeners. */
-  RegisterEnemyListeners();
+  if (opts.enableEnemyBalloons)
+    RegisterEnemyListeners();
 
   /* Mod object listeners. */
   RegisterBalloonBaseListeners();

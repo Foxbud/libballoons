@@ -94,7 +94,7 @@ static void KeybindPopBalloonsListener(void) {
 /* ----- INTERNAL FUNCTIONS ----- */
 
 void GameStepListener(void) {
-  if (AERGetPaused())
+  if (!opts.enableKeybinds || AERGetPaused())
     return;
 
   const bool *keysPressed = AERInputGetKeysPressed();
