@@ -98,18 +98,53 @@ static void KeybindPopBalloonsListener(void) {
 /* ----- INTERNAL FUNCTIONS ----- */
 
 void GameStepListener(void) {
-    if (!opts.enableKeybinds || AERGetPaused())
-        return;
+    /* Handle bugcon integration. */
+    static int32_t bugconInstId = -1;
+    if (AERGetNumSteps() == 1) {
+        aererr = AER_TRY;
+        int32_t objIdx = AERObjectGetByName("BugconConsole");
+        if (aererr == AER_OK) {
+            AERLogInfo("Detected \"bugcon\" mod.");
+            AERInstance* inst = NULL;
+            size_t numInsts = AERInstanceGetByObject(objIdx, false, 1, &inst);
+            if (numInsts != 1) {
+                AERLogErr(
+                    "Could not locate \"bugcon\" debug console instance! Make "
+                    "sure that mod \"bugcon\" has a higher priority than this "
+                    "mod.");
+                abort();
+            }
+            bugconInstId = AERInstanceGetId(inst);
+        } else {
+            AERLogInfo("Did not detect \"bugcon\" mod.");
+        }
+    }
 
+    /* Emulate pause event if bugcon console visibility changes. */
+    bool paused = AERGetPaused();
+    if (bugconInstId >= 0 && !paused) {
+        AERInstance* bugconInst = AERInstanceGetById(bugconInstId);
+        static bool prevVis = false;
+        bool curVis = paused = AERInstanceGetVisible(bugconInst);
+        if (prevVis != curVis) {
+            GamePauseListener(curVis);
+        }
+        prevVis = curVis;
+    }
+
+    /* Handle user input. */
+    if (!opts.enableKeybinds || paused)
+        return;
     const bool* keysPressed = AERInputGetKeysPressed();
     const bool* keysHeld = AERInputGetKeysHeld();
-
     if (CheckKeybind(opts.sizeKeybindSpawnBalloon, opts.keybindSpawnBalloon,
-                     keysPressed, keysHeld))
+                     keysPressed, keysHeld)) {
         KeybindSpawnBalloonListener();
+    }
     if (CheckKeybind(opts.sizeKeybindPopBalloons, opts.keybindPopBalloons,
-                     keysPressed, keysHeld))
+                     keysPressed, keysHeld)) {
         KeybindPopBalloonsListener();
+    }
 
     return;
 }

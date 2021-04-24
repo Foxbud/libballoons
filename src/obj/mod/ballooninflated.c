@@ -102,7 +102,7 @@ static bool SolidCollisionListener(AEREvent* event,
         return false;
 
     /* Move balloon away from center of other object. */
-    if (!AERGetPaused()) {
+    if (AERInstanceGetSpriteSpeed(target) > 0.0f) {
         float xt, yt, xo, yo;
         AERInstanceGetPosition(target, &xt, &yt);
         AERInstanceGetPosition(other, &xo, &yo);
