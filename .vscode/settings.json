@@ -4,7 +4,9 @@
         // Name of this mod.
         "modName": "balloons",
         // Names of all extra mods to launch when debugging (must be installed).
-        "extraModNames": []
+        "extraModNames": [
+            "bugcon"
+        ]
     },
     // VSCode settings.
     "editor.formatOnType": false,
@@ -37,6 +39,7 @@
         "insts",
         "keybind",
         "keybinds",
+        "libballoons",
         "moddef",
         "modpack",
         "num"

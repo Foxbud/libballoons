@@ -46,29 +46,18 @@ static bool CheckKeybind(size_t keybindSize,
 }
 
 static void KeybindSpawnBalloonListener(void) {
-    /* Get player instance. */
-    AERInstance* player = NULL;
-    size_t numPlayers =
-        AERInstanceGetByObject(AER_OBJECT_CHAR, true, 1, &player);
-    if (numPlayers < 1) {
-        AERLogWarn("Could not locate player.");
-        return;
-    } else if (numPlayers > 1) {
-        AERLogWarn("Cannot manually spawn balloon in co-op mode.");
-        return;
-    }
-
-    /* Get player position. */
+    /* Get mouse position. */
     float x, y;
-    AERInstanceGetPosition(player, &x, &y);
+    AERInputGetMousePositionVirtual(&x, &y);
 
     /* Spawn balloon inflating instance. */
     aererr = AER_TRY;
     AERInstanceCreate(objects.balloonInflating, x, y);
-    if (aererr == AER_OK)
+    if (aererr == AER_OK) {
         AERLogInfo("Spawned balloon at (%.1f, %.1f).", x, y);
-    else
+    } else {
         AERLogWarn("Could not spawn balloon at (%.1f, %.1f).", x, y);
+    }
 
     return;
 }

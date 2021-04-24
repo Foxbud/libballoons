@@ -9,8 +9,8 @@
 # AER mod runtime environment's configuration.
 [mre]
 mods = [
-    "${modName}",
     ${extraModNames}
+    "${modName}",
 ]
 error.promote_unhandled = true
 
@@ -18,3 +18,9 @@ error.promote_unhandled = true
 [${modName}]
 
 # (Optional) other mods' configuraitons...
+[bugcon]
+console.startup_commands = [
+    "roomgoto rm_title",
+    "clear",
+    "help",
+]
