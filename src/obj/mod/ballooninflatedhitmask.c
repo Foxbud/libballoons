@@ -51,9 +51,10 @@ static bool PostStepListener(AEREvent* event,
                              AERInstance* target,
                              AERInstance* other) {
     /* Destroy self if balloon inflated is gone. */
+    int32_t balloonId =
+        AERInstanceGetModLocal(target, "hitMaskTarget", true)->i;
     aererr = AER_TRY;
-    AERInstance* balloon = AERInstanceGetById(
-        AERInstanceGetModLocal(target, "hitMaskTarget", true)->i);
+    AERInstance* balloon = AERInstanceGetById(balloonId);
     if (aererr == AER_FAILED_LOOKUP) {
         AERInstanceDestroy(target);
         return false;
