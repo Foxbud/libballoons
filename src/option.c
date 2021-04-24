@@ -37,7 +37,7 @@ Options opts = {0};
 static bool ParseBool(const char* key, bool defaultVal) {
     bool result = defaultVal;
 
-    aererr = AER_OK;
+    aererr = AER_TRY;
     bool rawVal = AERConfGetBool(key);
     if (aererr == AER_FAILED_LOOKUP) {
         AERLogInfo(
@@ -61,7 +61,7 @@ static int64_t ParseInt(const char* key,
                         int64_t maxVal) {
     int64_t result = defaultVal;
 
-    aererr = AER_OK;
+    aererr = AER_TRY;
     int64_t rawVal = AERConfGetInt(key);
     if (aererr == AER_FAILED_LOOKUP) {
         AERLogInfo(
@@ -94,7 +94,7 @@ static int64_t* ParseInts(const char* key,
                           int64_t maxVal,
                           size_t* actualNum) {
     /* Get number of ints. */
-    aererr = AER_OK;
+    aererr = AER_TRY;
     size_t num = AERConfGetInts(key, 0, NULL);
     if (aererr == AER_FAILED_LOOKUP) {
         AERLogInfo(
@@ -119,7 +119,7 @@ static int64_t* ParseInts(const char* key,
     /* Get ints. */
     *actualNum = num;
     int64_t* result = malloc(num * sizeof(int64_t));
-    aererr = AER_OK;
+    aererr = AER_TRY;
     AERConfGetInts(key, num, result);
     if (aererr == AER_FAILED_PARSE) {
         AERLogErr("Configuration key \"%s\" could not be parsed as integers.",

@@ -63,7 +63,7 @@ static void KeybindSpawnBalloonListener(void) {
     AERInstanceGetPosition(player, &x, &y);
 
     /* Spawn balloon inflating instance. */
-    aererr = AER_OK;
+    aererr = AER_TRY;
     AERInstanceCreate(objects.balloonInflating, x, y);
     if (aererr == AER_OK)
         AERLogInfo("Spawned balloon at (%.1f, %.1f).", x, y);

@@ -1,8 +1,8 @@
 {
     "Check/Handle Error": {
-        "prefix": "aererr = AER_OK;",
+        "prefix": "aererr = AER_TRY;",
         "body": [
-            "aererr = AER_OK;",
+            "aererr = AER_TRY;",
             "${1:/* operation */}",
             "if (aererr != AER_OK) {",
             "\t${0:/* handle errors */}",
@@ -137,7 +137,7 @@
         "body": [
             "size_t ${1:numConf} = AERConfGet${2|Bools,Ints,Doubles,Strings|}(${3:key}, 0, NULL);",
             "${4|bool ,int64_t ,double ,const char *|}*${5:confBuf} = ${6|malloc,alloca|}($1 * sizeof($4));",
-            "aererr = AER_OK;",
+            "aererr = AER_TRY;",
             "AERConfGet$2($3, $1, $5);",
             "switch (aererr) {",
             "case AER_FAILED_LOOKUP:",

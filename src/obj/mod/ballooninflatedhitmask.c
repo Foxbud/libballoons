@@ -51,7 +51,7 @@ static bool PostStepListener(AEREvent* event,
                              AERInstance* target,
                              AERInstance* other) {
     /* Destroy self if balloon inflated is gone. */
-    aererr = AER_OK;
+    aererr = AER_TRY;
     AERInstance* balloon = AERInstanceGetById(
         AERInstanceGetModLocal(target, "hitMaskTarget", true)->i);
     if (aererr == AER_FAILED_LOOKUP) {
@@ -79,7 +79,7 @@ static bool HitCollisionListener(AEREvent* event,
         return false;
 
     /* Pop balloon inflated. */
-    aererr = AER_OK;
+    aererr = AER_TRY;
     AERInstance* balloon = AERInstanceGetById(
         AERInstanceGetModLocal(target, "hitMaskTarget", true)->i);
     if (aererr == AER_OK)

@@ -12,6 +12,7 @@ mods = [
     "${modName}",
     ${extraModNames}
 ]
+error.promote_unhandled = true
 
 # This mod's configuration.
 [${modName}]
