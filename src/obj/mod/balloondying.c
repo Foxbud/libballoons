@@ -26,67 +26,70 @@ static const float SPRITE_SPEED = 0.25f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREvent *event, AERInstance *target,
-                           AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool CreateListener(AEREvent* event,
+                           AERInstance* target,
+                           AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
+    AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
 
-  return true;
+    return true;
 }
 
-static bool DestroyListener(AEREvent *event, AERInstance *target,
-                            AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool DestroyListener(AEREvent* event,
+                            AERInstance* target,
+                            AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  /* Spawn balloon carcass instance. */
-  float x, y;
-  AERInstanceGetPosition(target, &x, &y);
-  AERInstance *new = AERInstanceCreate(objects.balloonCarcass, x, y);
+    /* Spawn balloon carcass instance. */
+    float x, y;
+    AERInstanceGetPosition(target, &x, &y);
+    AERInstance* new = AERInstanceCreate(objects.balloonCarcass, x, y);
 
-  /* Set new sprite. */
-  int32_t spriteIdx = AERInstanceGetSprite(target);
-  if (spriteIdx == sprites.balloonDyingBlue)
-    AERInstanceSetSprite(new, sprites.balloonCarcassBlue);
-  else
-    AERInstanceSetSprite(new, sprites.balloonCarcassRed);
+    /* Set new sprite. */
+    int32_t spriteIdx = AERInstanceGetSprite(target);
+    if (spriteIdx == sprites.balloonDyingBlue)
+        AERInstanceSetSprite(new, sprites.balloonCarcassBlue);
+    else
+        AERInstanceSetSprite(new, sprites.balloonCarcassRed);
 
-  return true;
+    return true;
 }
 
-static bool AnimationEndListener(AEREvent *event, AERInstance *target,
-                                 AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool AnimationEndListener(AEREvent* event,
+                                 AERInstance* target,
+                                 AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  AERInstanceDestroy(target);
+    AERInstanceDestroy(target);
 
-  return true;
+    return true;
 }
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
-void BalloonDyingSetPaused(AERInstance *target, bool paused) {
-  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED * !paused);
+void BalloonDyingSetPaused(AERInstance* target, bool paused) {
+    AERInstanceSetSpriteSpeed(target, SPRITE_SPEED * !paused);
 
-  return;
+    return;
 }
 
 void RegisterBalloonDyingObject(void) {
-  objects.balloonDying =
-      AERObjectRegister("BalloonDying", objects.balloonBase, AER_SPRITE_NULL,
-                        AER_SPRITE_NULL, 0, true, false, false);
+    objects.balloonDying =
+        AERObjectRegister("BalloonDying", objects.balloonBase, AER_SPRITE_NULL,
+                          AER_SPRITE_NULL, 0, true, false, false);
 
-  return;
+    return;
 }
 
 void RegisterBalloonDyingListeners(void) {
-  AERObjectAttachCreateListener(objects.balloonDying, CreateListener);
-  AERObjectAttachDestroyListener(objects.balloonDying, DestroyListener);
-  AERObjectAttachAnimationEndListener(objects.balloonDying,
-                                      AnimationEndListener);
+    AERObjectAttachCreateListener(objects.balloonDying, CreateListener);
+    AERObjectAttachDestroyListener(objects.balloonDying, DestroyListener);
+    AERObjectAttachAnimationEndListener(objects.balloonDying,
+                                        AnimationEndListener);
 
-  return;
+    return;
 }

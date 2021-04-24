@@ -20,6 +20,6 @@
 
 /* ----- PUBLIC FUNCTIONS ----- */
 
-void DefineMod(AERModDef *def);
+void DefineMod(AERModDef* def);
 
 #endif /* MODDEF_H */

@@ -1,0 +1,19 @@
+
+# This is the template configuration file used when debugging this mod.
+# The value of context variables can be substituted in using ${<varName>}.
+# Available context variables:
+#   modName         Expands to the name of this mod without quotes.
+#   extraModNames   Expands to the names of all extra configured launch mods
+#                   as comma-separated, quoted strings.
+
+# AER mod runtime environment's configuration.
+[mre]
+mods = [
+    "${modName}",
+    ${extraModNames}
+]
+
+# This mod's configuration.
+[${modName}]
+
+# (Optional) other mods' configuraitons...

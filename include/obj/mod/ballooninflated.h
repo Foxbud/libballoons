@@ -22,7 +22,7 @@
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
-void BalloonInflatedSetPaused(AERInstance *target, bool paused);
+void BalloonInflatedSetPaused(AERInstance* target, bool paused);
 
 void RegisterBalloonInflatedObject(void);
 

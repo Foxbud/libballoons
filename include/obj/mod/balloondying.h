@@ -22,7 +22,7 @@
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
-void BalloonDyingSetPaused(AERInstance *target, bool paused);
+void BalloonDyingSetPaused(AERInstance* target, bool paused);
 
 void RegisterBalloonDyingObject(void);
 

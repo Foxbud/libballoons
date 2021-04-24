@@ -34,122 +34,127 @@ static const float MAX_MOVE_SPEED = 0.2f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREvent *event, AERInstance *target,
-                           AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool CreateListener(AEREvent* event,
+                           AERInstance* target,
+                           AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  /* Set instance attributes. */
-  AERInstanceSetFriction(target, FRICTION);
-  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
+    /* Set instance attributes. */
+    AERInstanceSetFriction(target, FRICTION);
+    AERInstanceSetSpriteSpeed(target, SPRITE_SPEED);
 
-  /* Create hit mask. */
-  AERInstance *mask = AERInstanceCreate(objects.balloonInflatedHitMask, 0, 0);
-  AERInstanceGetModLocal(mask, "hitMaskTarget", true)->i =
-      AERInstanceGetId(target);
+    /* Create hit mask. */
+    AERInstance* mask = AERInstanceCreate(objects.balloonInflatedHitMask, 0, 0);
+    AERInstanceGetModLocal(mask, "hitMaskTarget", true)->i =
+        AERInstanceGetId(target);
 
-  return true;
+    return true;
 }
 
-static bool DestroyListener(AEREvent *event, AERInstance *target,
-                            AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool DestroyListener(AEREvent* event,
+                            AERInstance* target,
+                            AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  /* Spawn balloon dying instance. */
-  float x, y;
-  AERInstanceGetPosition(target, &x, &y);
-  AERInstance *new = AERInstanceCreate(objects.balloonDying, x, y);
-
-  /* Set new sprite. */
-  int32_t spriteIdx = AERInstanceGetSprite(target);
-  if (spriteIdx == sprites.balloonInflatedBlue)
-    AERInstanceSetSprite(new, sprites.balloonDyingBlue);
-  else
-    AERInstanceSetSprite(new, sprites.balloonDyingRed);
-
-  return true;
-}
-
-static bool StepListener(AEREvent *event, AERInstance *target,
-                         AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
-
-  /* Limit speed. */
-  if (!AERGetPaused()) {
+    /* Spawn balloon dying instance. */
     float x, y;
-    AERInstanceGetMotion(target, &x, &y);
-    float speed = sqrtf(x * x + y * y);
-    if (speed > MAX_MOVE_SPEED) {
-      float coef = MAX_MOVE_SPEED / speed;
-      AERInstanceSetMotion(target, x * coef, y * coef);
-    }
-  }
+    AERInstanceGetPosition(target, &x, &y);
+    AERInstance* new = AERInstanceCreate(objects.balloonDying, x, y);
 
-  return true;
+    /* Set new sprite. */
+    int32_t spriteIdx = AERInstanceGetSprite(target);
+    if (spriteIdx == sprites.balloonInflatedBlue)
+        AERInstanceSetSprite(new, sprites.balloonDyingBlue);
+    else
+        AERInstanceSetSprite(new, sprites.balloonDyingRed);
+
+    return true;
 }
 
-static bool SolidCollisionListener(AEREvent *event, AERInstance *target,
-                                   AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool StepListener(AEREvent* event,
+                         AERInstance* target,
+                         AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  /* Move balloon away from center of other object. */
-  if (!AERGetPaused()) {
-    float xt, yt, xo, yo;
-    AERInstanceGetPosition(target, &xt, &yt);
-    AERInstanceGetPosition(other, &xo, &yo);
-    float dx = xt - xo;
-    float dy = yt - yo;
-    /*
-     * If balloon and other object are at the exact same position,
-     * randomly generate motion.
-     */
-    while (dx == 0.0f && dy == 0.0f) {
-      dx = AERRandFloatRange(-0.5f, 0.5f);
-      dy = AERRandFloatRange(-0.5f, 0.5f);
+    /* Limit speed. */
+    if (!AERGetPaused()) {
+        float x, y;
+        AERInstanceGetMotion(target, &x, &y);
+        float speed = sqrtf(x * x + y * y);
+        if (speed > MAX_MOVE_SPEED) {
+            float coef = MAX_MOVE_SPEED / speed;
+            AERInstanceSetMotion(target, x * coef, y * coef);
+        }
     }
-    float coef = MAX_MOVE_SPEED / sqrtf(dx * dx + dy * dy);
-    AERInstanceAddMotion(target, dx * coef, dy * coef);
-  }
 
-  return true;
+    return true;
+}
+
+static bool SolidCollisionListener(AEREvent* event,
+                                   AERInstance* target,
+                                   AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
+
+    /* Move balloon away from center of other object. */
+    if (!AERGetPaused()) {
+        float xt, yt, xo, yo;
+        AERInstanceGetPosition(target, &xt, &yt);
+        AERInstanceGetPosition(other, &xo, &yo);
+        float dx = xt - xo;
+        float dy = yt - yo;
+        /*
+         * If balloon and other object are at the exact same position,
+         * randomly generate motion.
+         */
+        while (dx == 0.0f && dy == 0.0f) {
+            dx = AERRandFloatRange(-0.5f, 0.5f);
+            dy = AERRandFloatRange(-0.5f, 0.5f);
+        }
+        float coef = MAX_MOVE_SPEED / sqrtf(dx * dx + dy * dy);
+        AERInstanceAddMotion(target, dx * coef, dy * coef);
+    }
+
+    return true;
 }
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
-void BalloonInflatedSetPaused(AERInstance *target, bool paused) {
-  AERInstanceSetSpriteSpeed(target, SPRITE_SPEED * !paused);
-  if (paused)
-    AERInstanceSetMotion(target, 0.0f, 0.0f);
+void BalloonInflatedSetPaused(AERInstance* target, bool paused) {
+    AERInstanceSetSpriteSpeed(target, SPRITE_SPEED * !paused);
+    if (paused)
+        AERInstanceSetMotion(target, 0.0f, 0.0f);
 
-  return;
+    return;
 }
 
 void RegisterBalloonInflatedObject(void) {
-  objects.balloonInflated =
-      AERObjectRegister("BalloonInflated", objects.balloonBase, AER_SPRITE_NULL,
-                        sprites.balloonInflatedSolidMask, 0, true, true, false);
+    objects.balloonInflated = AERObjectRegister(
+        "BalloonInflated", objects.balloonBase, AER_SPRITE_NULL,
+        sprites.balloonInflatedSolidMask, 0, true, true, false);
 
-  return;
+    return;
 }
 
 void RegisterBalloonInflatedListeners(void) {
-  AERObjectAttachCreateListener(objects.balloonInflated, CreateListener);
-  AERObjectAttachDestroyListener(objects.balloonInflated, DestroyListener);
-  AERObjectAttachStepListener(objects.balloonInflated, StepListener);
+    AERObjectAttachCreateListener(objects.balloonInflated, CreateListener);
+    AERObjectAttachDestroyListener(objects.balloonInflated, DestroyListener);
+    AERObjectAttachStepListener(objects.balloonInflated, StepListener);
 
-  /* Solid collisions. */
-  AERObjectAttachCollisionListener(
-      objects.balloonInflated, objects.balloonInflated, SolidCollisionListener);
-  AERObjectAttachCollisionListener(objects.balloonInflated, AER_OBJECT_CHAR,
-                                   SolidCollisionListener);
-  AERObjectAttachCollisionListener(objects.balloonInflated, AER_OBJECT_ENEMY,
-                                   SolidCollisionListener);
-  AERObjectAttachCollisionListener(objects.balloonInflated,
-                                   AER_OBJECT_PATHFINDOBSTACLE,
-                                   SolidCollisionListener);
+    /* Solid collisions. */
+    AERObjectAttachCollisionListener(objects.balloonInflated,
+                                     objects.balloonInflated,
+                                     SolidCollisionListener);
+    AERObjectAttachCollisionListener(objects.balloonInflated, AER_OBJECT_CHAR,
+                                     SolidCollisionListener);
+    AERObjectAttachCollisionListener(objects.balloonInflated, AER_OBJECT_ENEMY,
+                                     SolidCollisionListener);
+    AERObjectAttachCollisionListener(objects.balloonInflated,
+                                     AER_OBJECT_PATHFINDOBSTACLE,
+                                     SolidCollisionListener);
 
-  return;
+    return;
 }

@@ -1,29 +1,43 @@
 {
-  // MDK settings.
-  "mdk": {
-    "modName": "balloons",
-    // Make sure to surround each mod name with escaped double quotes.
-    "launchMods": [
-      "\"${config:mdk.modName}\"",
-    ]
-  },
-  // VSCode settings.
-  "editor.formatOnType": true,
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": true,
-  "editor.detectIndentation": false,
-  "editor.tabSize": 2,
-  "C_Cpp.clang_format_sortIncludes": true,
-  "C_Cpp.default.compilerPath": "/usr/bin/gcc",
-  "C_Cpp.default.intelliSenseMode": "gcc-x86",
-  "C_Cpp.loggingLevel": "Warning",
-  "cSpell.words": [
-    "aererr",
-    "coef",
-    "deinitializing",
-    "insts",
-    "keybind",
-    "keybinds",
-    "num"
-  ],
+    // MDK settings.
+    "mdk": {
+        // Name of this mod.
+        "modName": "balloons",
+        // Names of all extra mods to launch when debugging (must be installed).
+        "extraModNames": []
+    },
+    // VSCode settings.
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false,
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "C_Cpp.clang_format_sortIncludes": true,
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+    "C_Cpp.default.intelliSenseMode": "gcc-x86",
+    "C_Cpp.loggingLevel": "Warning",
+    "C_Cpp.autoAddFileAssociations": false,
+    "files.associations": {
+        "*.h": "c",
+        "*.toml.in": "toml",
+    },
+    "[toml]": {
+        "editor.formatOnSave": false,
+    },
+    "cSpell.words": [
+        "aer",
+        "aererr",
+        "aerman",
+        "aermdk",
+        "deinitializing",
+        "dev",
+        "fairburn",
+        "gamedir",
+        "insts",
+        "keybind",
+        "keybinds",
+        "moddef",
+        "modpack",
+        "num"
+    ],
 }

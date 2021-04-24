@@ -22,28 +22,29 @@
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREvent *event, AERInstance *target,
-                           AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool CreateListener(AEREvent* event,
+                           AERInstance* target,
+                           AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  AERInstanceSyncDepth(target);
+    AERInstanceSyncDepth(target);
 
-  return true;
+    return true;
 }
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterBalloonBaseObject(void) {
-  objects.balloonBase =
-      AERObjectRegister("BalloonBase", AER_OBJECT_MASTERCLASS, AER_SPRITE_NULL,
-                        AER_SPRITE_NULL, 0, false, false, false);
+    objects.balloonBase = AERObjectRegister(
+        "BalloonBase", AER_OBJECT_MASTERCLASS, AER_SPRITE_NULL, AER_SPRITE_NULL,
+        0, false, false, false);
 
-  return;
+    return;
 }
 
 void RegisterBalloonBaseListeners(void) {
-  AERObjectAttachCreateListener(objects.balloonBase, CreateListener);
+    AERObjectAttachCreateListener(objects.balloonBase, CreateListener);
 
-  return;
+    return;
 }

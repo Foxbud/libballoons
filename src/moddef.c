@@ -27,33 +27,33 @@
 /* ----- PRIVATE FUNCTIONS ----- */
 
 static void ModConstructor(void) {
-  AERLogInfo("Initializing mod...");
+    AERLogInfo("Initializing mod...");
 
-  OptionConstructor();
+    OptionConstructor();
 
-  AERLogInfo("Done initializing mod.");
-  return;
+    AERLogInfo("Done initializing mod.");
+    return;
 }
 
 static void ModDestructor(void) {
-  AERLogInfo("Deinitializing mod...");
+    AERLogInfo("Deinitializing mod...");
 
-  OptionDestructor();
+    OptionDestructor();
 
-  AERLogInfo("Done deinitializing mod.");
-  return;
+    AERLogInfo("Done deinitializing mod.");
+    return;
 }
 
 /* ----- PUBLIC FUNCTIONS ----- */
 
-MOD_EXPORT void DefineMod(AERModDef *def) {
-  def->constructor = ModConstructor;
-  def->destructor = ModDestructor;
-  def->registerSprites = RegisterSprites;
-  def->registerObjects = RegisterObjects;
-  def->registerObjectListeners = RegisterObjectListeners;
-  def->gameStepListener = GameStepListener;
-  def->gamePauseListener = GamePauseListener;
+MOD_EXPORT void DefineMod(AERModDef* def) {
+    def->constructor = ModConstructor;
+    def->destructor = ModDestructor;
+    def->registerSprites = RegisterSprites;
+    def->registerObjects = RegisterObjects;
+    def->registerObjectListeners = RegisterObjectListeners;
+    def->gameStepListener = GameStepListener;
+    def->gamePauseListener = GamePauseListener;
 
-  return;
+    return;
 }

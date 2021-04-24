@@ -21,12 +21,12 @@
 /* ----- INTERNAL TYPES ----- */
 
 typedef struct Objects {
-  int32_t balloonBase;
-  int32_t balloonInflating;
-  int32_t balloonInflated;
-  int32_t balloonInflatedHitMask;
-  int32_t balloonDying;
-  int32_t balloonCarcass;
+    int32_t balloonBase;
+    int32_t balloonInflating;
+    int32_t balloonInflated;
+    int32_t balloonInflatedHitMask;
+    int32_t balloonDying;
+    int32_t balloonCarcass;
 } Objects;
 
 /* ----- INTERNAL GLOBALS ------ */

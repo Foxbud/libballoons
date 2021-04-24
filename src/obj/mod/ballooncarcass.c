@@ -32,50 +32,53 @@ static const float MAX_SPRITE_ANGLE = 20.0f;
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREvent *event, AERInstance *target,
-                           AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool CreateListener(AEREvent* event,
+                           AERInstance* target,
+                           AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  AERInstanceSetAlarm(target, opts.alarmBalloonCarcassFade, FADE_DELAY);
-  AERInstanceSetSpriteAngle(
-      target, AERRandFloatRange(-MAX_SPRITE_ANGLE, MAX_SPRITE_ANGLE));
+    AERInstanceSetAlarm(target, opts.alarmBalloonCarcassFade, FADE_DELAY);
+    AERInstanceSetSpriteAngle(
+        target, AERRandFloatRange(-MAX_SPRITE_ANGLE, MAX_SPRITE_ANGLE));
 
-  return true;
+    return true;
 }
 
-static bool FadeAlarmListener(AEREvent *event, AERInstance *target,
-                              AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool FadeAlarmListener(AEREvent* event,
+                              AERInstance* target,
+                              AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  float alpha = AERInstanceGetSpriteAlpha(target);
-  if (!AERGetPaused())
-    alpha -= 5.0f / (30.0f * 5.0f);
-  if (alpha > 0.0f) {
-    AERInstanceSetSpriteAlpha(target, alpha);
-    AERInstanceSetAlarm(target, opts.alarmBalloonCarcassFade, 5);
-  } else {
-    AERInstanceDestroy(target);
-  }
+    float alpha = AERInstanceGetSpriteAlpha(target);
+    if (!AERGetPaused())
+        alpha -= 5.0f / (30.0f * 5.0f);
+    if (alpha > 0.0f) {
+        AERInstanceSetSpriteAlpha(target, alpha);
+        AERInstanceSetAlarm(target, opts.alarmBalloonCarcassFade, 5);
+    } else {
+        AERInstanceDestroy(target);
+    }
 
-  return true;
+    return true;
 }
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterBalloonCarcassObject(void) {
-  objects.balloonCarcass =
-      AERObjectRegister("BalloonCarcass", objects.balloonBase, AER_SPRITE_NULL,
-                        AER_SPRITE_NULL, 0, true, false, false);
+    objects.balloonCarcass = AERObjectRegister(
+        "BalloonCarcass", objects.balloonBase, AER_SPRITE_NULL, AER_SPRITE_NULL,
+        0, true, false, false);
 
-  return;
+    return;
 }
 
 void RegisterBalloonCarcassListeners(void) {
-  AERObjectAttachCreateListener(objects.balloonCarcass, CreateListener);
-  AERObjectAttachAlarmListener(objects.balloonCarcass,
-                               opts.alarmBalloonCarcassFade, FadeAlarmListener);
+    AERObjectAttachCreateListener(objects.balloonCarcass, CreateListener);
+    AERObjectAttachAlarmListener(objects.balloonCarcass,
+                                 opts.alarmBalloonCarcassFade,
+                                 FadeAlarmListener);
 
-  return;
+    return;
 }

@@ -21,25 +21,26 @@
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool DestroyListener(AEREvent *event, AERInstance *target,
-                            AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool DestroyListener(AEREvent* event,
+                            AERInstance* target,
+                            AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  /* Get enemy position. */
-  float x, y;
-  AERInstanceGetPosition(target, &x, &y);
+    /* Get enemy position. */
+    float x, y;
+    AERInstanceGetPosition(target, &x, &y);
 
-  /* Spawn balloon instance. */
-  AERInstanceCreate(objects.balloonInflating, x, y);
+    /* Spawn balloon instance. */
+    AERInstanceCreate(objects.balloonInflating, x, y);
 
-  return true;
+    return true;
 }
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterEnemyListeners(void) {
-  AERObjectAttachDestroyListener(AER_OBJECT_ENEMY, DestroyListener);
+    AERObjectAttachDestroyListener(AER_OBJECT_ENEMY, DestroyListener);
 
-  return;
+    return;
 }

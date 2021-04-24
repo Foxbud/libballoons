@@ -33,108 +33,112 @@
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CheckKeybind(size_t keybindSize, const int64_t *keybind,
-                         const bool *keysPressed, const bool *keysHeld) {
-  uint32_t numHeld = keybindSize - 1;
-  for (uint32_t idx = 0; idx < numHeld; idx++)
-    if (!keysHeld[keybind[idx]])
-      return false;
+static bool CheckKeybind(size_t keybindSize,
+                         const int64_t* keybind,
+                         const bool* keysPressed,
+                         const bool* keysHeld) {
+    uint32_t numHeld = keybindSize - 1;
+    for (uint32_t idx = 0; idx < numHeld; idx++)
+        if (!keysHeld[keybind[idx]])
+            return false;
 
-  return keysPressed[keybind[numHeld]];
+    return keysPressed[keybind[numHeld]];
 }
 
 static void KeybindSpawnBalloonListener(void) {
-  /* Get player instance. */
-  AERInstance *player = NULL;
-  size_t numPlayers = AERInstanceGetByObject(AER_OBJECT_CHAR, true, 1, &player);
-  if (numPlayers < 1) {
-    AERLogWarn("Could not locate player.");
+    /* Get player instance. */
+    AERInstance* player = NULL;
+    size_t numPlayers =
+        AERInstanceGetByObject(AER_OBJECT_CHAR, true, 1, &player);
+    if (numPlayers < 1) {
+        AERLogWarn("Could not locate player.");
+        return;
+    } else if (numPlayers > 1) {
+        AERLogWarn("Cannot manually spawn balloon in co-op mode.");
+        return;
+    }
+
+    /* Get player position. */
+    float x, y;
+    AERInstanceGetPosition(player, &x, &y);
+
+    /* Spawn balloon inflating instance. */
+    aererr = AER_OK;
+    AERInstanceCreate(objects.balloonInflating, x, y);
+    if (aererr == AER_OK)
+        AERLogInfo("Spawned balloon at (%.1f, %.1f).", x, y);
+    else
+        AERLogWarn("Could not spawn balloon at (%.1f, %.1f).", x, y);
+
     return;
-  } else if (numPlayers > 1) {
-    AERLogWarn("Cannot manually spawn balloon in co-op mode.");
-    return;
-  }
-
-  /* Get player position. */
-  float x, y;
-  AERInstanceGetPosition(player, &x, &y);
-
-  /* Spawn balloon inflating instance. */
-  aererr = AER_OK;
-  AERInstanceCreate(objects.balloonInflating, x, y);
-  if (aererr == AER_OK)
-    AERLogInfo("Spawned balloon at (%.1f, %.1f).", x, y);
-  else
-    AERLogWarn("Could not spawn balloon at (%.1f, %.1f).", x, y);
-
-  return;
 }
 
 static void KeybindPopBalloonsListener(void) {
-  /* Get all balloon instances. */
-  size_t numBalloons =
-      AERInstanceGetByObject(objects.balloonInflated, true, 0, NULL);
-  if (numBalloons == 0) {
-    AERLogWarn("No balloons to pop.");
+    /* Get all balloon instances. */
+    size_t numBalloons =
+        AERInstanceGetByObject(objects.balloonInflated, true, 0, NULL);
+    if (numBalloons == 0) {
+        AERLogWarn("No balloons to pop.");
+        return;
+    }
+    AERInstance** balloons = malloc(numBalloons * sizeof(AERInstance*));
+    AERInstanceGetByObject(objects.balloonInflated, true, numBalloons,
+                           balloons);
+
+    /* Pop balloons. */
+    for (uint32_t idx = 0; idx < numBalloons; idx++)
+        AERInstanceDestroy(balloons[idx]);
+    AERLogInfo("Popped %zu balloon%s.", numBalloons,
+               (numBalloons == 1) ? "" : "s");
+    free(balloons);
+
     return;
-  }
-  AERInstance **balloons = malloc(numBalloons * sizeof(AERInstance *));
-  AERInstanceGetByObject(objects.balloonInflated, true, numBalloons, balloons);
-
-  /* Pop balloons. */
-  for (uint32_t idx = 0; idx < numBalloons; idx++)
-    AERInstanceDestroy(balloons[idx]);
-  AERLogInfo("Popped %zu balloon%s.", numBalloons,
-             (numBalloons == 1) ? "" : "s");
-  free(balloons);
-
-  return;
 }
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
 void GameStepListener(void) {
-  if (!opts.enableKeybinds || AERGetPaused())
+    if (!opts.enableKeybinds || AERGetPaused())
+        return;
+
+    const bool* keysPressed = AERInputGetKeysPressed();
+    const bool* keysHeld = AERInputGetKeysHeld();
+
+    if (CheckKeybind(opts.sizeKeybindSpawnBalloon, opts.keybindSpawnBalloon,
+                     keysPressed, keysHeld))
+        KeybindSpawnBalloonListener();
+    if (CheckKeybind(opts.sizeKeybindPopBalloons, opts.keybindPopBalloons,
+                     keysPressed, keysHeld))
+        KeybindPopBalloonsListener();
+
     return;
-
-  const bool *keysPressed = AERInputGetKeysPressed();
-  const bool *keysHeld = AERInputGetKeysHeld();
-
-  if (CheckKeybind(opts.sizeKeybindSpawnBalloon, opts.keybindSpawnBalloon,
-                   keysPressed, keysHeld))
-    KeybindSpawnBalloonListener();
-  if (CheckKeybind(opts.sizeKeybindPopBalloons, opts.keybindPopBalloons,
-                   keysPressed, keysHeld))
-    KeybindPopBalloonsListener();
-
-  return;
 }
 
 void GamePauseListener(bool paused) {
-  size_t numInsts;
-  AERInstance **insts = NULL;
+    size_t numInsts;
+    AERInstance** insts = NULL;
 
-  numInsts = AERInstanceGetByObject(objects.balloonInflating, true, 0, NULL);
-  insts = malloc(numInsts * sizeof(AERInstance *));
-  AERInstanceGetByObject(objects.balloonInflating, true, numInsts, insts);
-  for (uint32_t idx = 0; idx < numInsts; idx++)
-    BalloonInflatingSetPaused(insts[idx], paused);
-  free(insts);
+    numInsts = AERInstanceGetByObject(objects.balloonInflating, true, 0, NULL);
+    insts = malloc(numInsts * sizeof(AERInstance*));
+    AERInstanceGetByObject(objects.balloonInflating, true, numInsts, insts);
+    for (uint32_t idx = 0; idx < numInsts; idx++)
+        BalloonInflatingSetPaused(insts[idx], paused);
+    free(insts);
 
-  numInsts = AERInstanceGetByObject(objects.balloonInflated, true, 0, NULL);
-  insts = malloc(numInsts * sizeof(AERInstance *));
-  AERInstanceGetByObject(objects.balloonInflated, true, numInsts, insts);
-  for (uint32_t idx = 0; idx < numInsts; idx++)
-    BalloonInflatedSetPaused(insts[idx], paused);
-  free(insts);
+    numInsts = AERInstanceGetByObject(objects.balloonInflated, true, 0, NULL);
+    insts = malloc(numInsts * sizeof(AERInstance*));
+    AERInstanceGetByObject(objects.balloonInflated, true, numInsts, insts);
+    for (uint32_t idx = 0; idx < numInsts; idx++)
+        BalloonInflatedSetPaused(insts[idx], paused);
+    free(insts);
 
-  numInsts = AERInstanceGetByObject(objects.balloonDying, true, 0, NULL);
-  insts = malloc(numInsts * sizeof(AERInstance *));
-  AERInstanceGetByObject(objects.balloonDying, true, numInsts, insts);
-  for (uint32_t idx = 0; idx < numInsts; idx++)
-    BalloonDyingSetPaused(insts[idx], paused);
-  free(insts);
+    numInsts = AERInstanceGetByObject(objects.balloonDying, true, 0, NULL);
+    insts = malloc(numInsts * sizeof(AERInstance*));
+    AERInstanceGetByObject(objects.balloonDying, true, numInsts, insts);
+    for (uint32_t idx = 0; idx < numInsts; idx++)
+        BalloonDyingSetPaused(insts[idx], paused);
+    free(insts);
 
-  insts = NULL;
-  return;
+    insts = NULL;
+    return;
 }

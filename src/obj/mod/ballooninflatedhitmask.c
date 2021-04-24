@@ -25,96 +25,102 @@
 
 /* ----- PRIVATE FUNCTIONS ----- */
 
-static bool CreateListener(AEREvent *event, AERInstance *target,
-                           AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool CreateListener(AEREvent* event,
+                           AERInstance* target,
+                           AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  AERInstanceCreateModLocal(target, "hitMaskTarget", true, NULL)->i = -1;
+    AERInstanceCreateModLocal(target, "hitMaskTarget", true, NULL)->i = -1;
 
-  return true;
+    return true;
 }
 
-static bool DestroyListener(AEREvent *event, AERInstance *target,
-                            AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
+static bool DestroyListener(AEREvent* event,
+                            AERInstance* target,
+                            AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
 
-  AERInstanceDestroyModLocal(target, "hitMaskTarget", true);
+    AERInstanceDestroyModLocal(target, "hitMaskTarget", true);
 
-  return true;
+    return true;
 }
 
-static bool PostStepListener(AEREvent *event, AERInstance *target,
-                             AERInstance *other) {
-  /* Destroy self if balloon inflated is gone. */
-  aererr = AER_OK;
-  AERInstance *balloon = AERInstanceGetById(
-      AERInstanceGetModLocal(target, "hitMaskTarget", true)->i);
-  if (aererr == AER_FAILED_LOOKUP) {
+static bool PostStepListener(AEREvent* event,
+                             AERInstance* target,
+                             AERInstance* other) {
+    /* Destroy self if balloon inflated is gone. */
+    aererr = AER_OK;
+    AERInstance* balloon = AERInstanceGetById(
+        AERInstanceGetModLocal(target, "hitMaskTarget", true)->i);
+    if (aererr == AER_FAILED_LOOKUP) {
+        AERInstanceDestroy(target);
+        return false;
+    }
+
+    if (!event->handle(event, target, other))
+        return false;
+
+    /* Synchronize position with balloon inflated. */
+    if (!AERGetPaused()) {
+        float x = 0.0f, y = 0.0f;
+        AERInstanceGetPosition(balloon, &x, &y);
+        AERInstanceSetPosition(target, x, y);
+    }
+
+    return true;
+}
+
+static bool HitCollisionListener(AEREvent* event,
+                                 AERInstance* target,
+                                 AERInstance* other) {
+    if (!event->handle(event, target, other))
+        return false;
+
+    /* Pop balloon inflated. */
+    aererr = AER_OK;
+    AERInstance* balloon = AERInstanceGetById(
+        AERInstanceGetModLocal(target, "hitMaskTarget", true)->i);
+    if (aererr == AER_OK)
+        AERInstanceDestroy(balloon);
+
+    /* Destroy self. */
     AERInstanceDestroy(target);
-    return false;
-  }
 
-  if (!event->handle(event, target, other))
-    return false;
-
-  /* Synchronize position with balloon inflated. */
-  if (!AERGetPaused()) {
-    float x = 0.0f, y = 0.0f;
-    AERInstanceGetPosition(balloon, &x, &y);
-    AERInstanceSetPosition(target, x, y);
-  }
-
-  return true;
-}
-
-static bool HitCollisionListener(AEREvent *event, AERInstance *target,
-                                 AERInstance *other) {
-  if (!event->handle(event, target, other))
-    return false;
-
-  /* Pop balloon inflated. */
-  aererr = AER_OK;
-  AERInstance *balloon = AERInstanceGetById(
-      AERInstanceGetModLocal(target, "hitMaskTarget", true)->i);
-  if (aererr == AER_OK)
-    AERInstanceDestroy(balloon);
-
-  /* Destroy self. */
-  AERInstanceDestroy(target);
-
-  return true;
+    return true;
 }
 
 /* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterBalloonInflatedHitMaskObject(void) {
-  objects.balloonInflatedHitMask = AERObjectRegister(
-      "BalloonInflatedHitMask", AER_OBJECT_MASTERCLASS, AER_SPRITE_NULL,
-      sprites.balloonInflatedHitMask, 0, false, true, false);
+    objects.balloonInflatedHitMask = AERObjectRegister(
+        "BalloonInflatedHitMask", AER_OBJECT_MASTERCLASS, AER_SPRITE_NULL,
+        sprites.balloonInflatedHitMask, 0, false, true, false);
 
-  return;
+    return;
 }
 
 void RegisterBalloonInflatedHitMaskListeners(void) {
-  AERObjectAttachCreateListener(objects.balloonInflatedHitMask, CreateListener);
-  AERObjectAttachDestroyListener(objects.balloonInflatedHitMask,
-                                 DestroyListener);
-  AERObjectAttachPostStepListener(objects.balloonInflatedHitMask,
-                                  PostStepListener);
+    AERObjectAttachCreateListener(objects.balloonInflatedHitMask,
+                                  CreateListener);
+    AERObjectAttachDestroyListener(objects.balloonInflatedHitMask,
+                                   DestroyListener);
+    AERObjectAttachPostStepListener(objects.balloonInflatedHitMask,
+                                    PostStepListener);
 
-  /* Hit collisions. */
-  AERObjectAttachCollisionListener(objects.balloonInflatedHitMask,
-                                   AER_OBJECT_ATTACKCOL, HitCollisionListener);
-  AERObjectAttachCollisionListener(objects.balloonInflatedHitMask,
-                                   AER_OBJECT_ENEMYWEAPONCOL,
-                                   HitCollisionListener);
-  AERObjectAttachCollisionListener(objects.balloonInflatedHitMask,
-                                   AER_OBJECT_BULLET, HitCollisionListener);
-  AERObjectAttachCollisionListener(objects.balloonInflatedHitMask,
-                                   AER_OBJECT_ENEMYBULLET,
-                                   HitCollisionListener);
+    /* Hit collisions. */
+    AERObjectAttachCollisionListener(objects.balloonInflatedHitMask,
+                                     AER_OBJECT_ATTACKCOL,
+                                     HitCollisionListener);
+    AERObjectAttachCollisionListener(objects.balloonInflatedHitMask,
+                                     AER_OBJECT_ENEMYWEAPONCOL,
+                                     HitCollisionListener);
+    AERObjectAttachCollisionListener(objects.balloonInflatedHitMask,
+                                     AER_OBJECT_BULLET, HitCollisionListener);
+    AERObjectAttachCollisionListener(objects.balloonInflatedHitMask,
+                                     AER_OBJECT_ENEMYBULLET,
+                                     HitCollisionListener);
 
-  return;
+    return;
 }

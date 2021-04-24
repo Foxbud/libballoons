@@ -30,28 +30,28 @@ Objects objects = {0};
 /* ----- INTERNAL FUNCTIONS ----- */
 
 void RegisterObjects(void) {
-  RegisterBalloonBaseObject();
-  RegisterBalloonInflatingObject();
-  RegisterBalloonInflatedObject();
-  RegisterBalloonInflatedHitMaskObject();
-  RegisterBalloonDyingObject();
-  RegisterBalloonCarcassObject();
+    RegisterBalloonBaseObject();
+    RegisterBalloonInflatingObject();
+    RegisterBalloonInflatedObject();
+    RegisterBalloonInflatedHitMaskObject();
+    RegisterBalloonDyingObject();
+    RegisterBalloonCarcassObject();
 
-  return;
+    return;
 }
 
 void RegisterObjectListeners(void) {
-  /* Vanilla object listeners. */
-  if (opts.enableEnemyBalloons)
-    RegisterEnemyListeners();
+    /* Vanilla object listeners. */
+    if (opts.enableEnemyBalloons)
+        RegisterEnemyListeners();
 
-  /* Mod object listeners. */
-  RegisterBalloonBaseListeners();
-  RegisterBalloonInflatingListeners();
-  RegisterBalloonInflatedListeners();
-  RegisterBalloonInflatedHitMaskListeners();
-  RegisterBalloonDyingListeners();
-  RegisterBalloonCarcassListeners();
+    /* Mod object listeners. */
+    RegisterBalloonBaseListeners();
+    RegisterBalloonInflatingListeners();
+    RegisterBalloonInflatedListeners();
+    RegisterBalloonInflatedHitMaskListeners();
+    RegisterBalloonDyingListeners();
+    RegisterBalloonCarcassListeners();
 
-  return;
+    return;
 }

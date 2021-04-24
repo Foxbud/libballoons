@@ -22,13 +22,13 @@
 /* ----- INTERNAL TYPES ----- */
 
 typedef struct Options {
-  bool enableKeybinds;
-  bool enableEnemyBalloons;
-  int64_t *keybindSpawnBalloon;
-  size_t sizeKeybindSpawnBalloon;
-  int64_t *keybindPopBalloons;
-  size_t sizeKeybindPopBalloons;
-  int64_t alarmBalloonCarcassFade;
+    bool enableKeybinds;
+    bool enableEnemyBalloons;
+    int64_t* keybindSpawnBalloon;
+    size_t sizeKeybindSpawnBalloon;
+    int64_t* keybindPopBalloons;
+    size_t sizeKeybindPopBalloons;
+    int64_t alarmBalloonCarcassFade;
 } Options;
 
 /* ----- INTERNAL GLOBALS ----- */

@@ -21,16 +21,16 @@
 /* ----- INTERNAL TYPES ----- */
 
 typedef struct Sprites {
-  int32_t balloonInflatingRed;
-  int32_t balloonInflatingBlue;
-  int32_t balloonInflatedRed;
-  int32_t balloonInflatedBlue;
-  int32_t balloonInflatedSolidMask;
-  int32_t balloonInflatedHitMask;
-  int32_t balloonDyingRed;
-  int32_t balloonDyingBlue;
-  int32_t balloonCarcassRed;
-  int32_t balloonCarcassBlue;
+    int32_t balloonInflatingRed;
+    int32_t balloonInflatingBlue;
+    int32_t balloonInflatedRed;
+    int32_t balloonInflatedBlue;
+    int32_t balloonInflatedSolidMask;
+    int32_t balloonInflatedHitMask;
+    int32_t balloonDyingRed;
+    int32_t balloonDyingBlue;
+    int32_t balloonCarcassRed;
+    int32_t balloonCarcassBlue;
 } Sprites;
 
 /* ----- INTERNAL GLOBALS ------ */
