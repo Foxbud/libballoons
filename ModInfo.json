@@ -1,6 +1,6 @@
 {
     "name": "balloons",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "minimum_mre_version": "1.0.0",
     "description": "Physics-enabled balloons.",
     "homepage": "fairburn.dev",
