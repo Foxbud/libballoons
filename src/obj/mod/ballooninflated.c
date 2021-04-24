@@ -79,6 +79,8 @@ static bool StepListener(AEREvent* event,
     if (!event->handle(event, target, other))
         return false;
 
+    AERInstanceSyncDepth(target);
+
     /* Limit speed. */
     if (!AERGetPaused()) {
         float x, y;
