@@ -103,11 +103,12 @@ static bool SolidCollisionListener(AEREvent* event,
 
     /* Move balloon away from center of other object. */
     if (AERInstanceGetSpriteSpeed(target) > 0.0f) {
-        float xt, yt, xo, yo;
-        AERInstanceGetPosition(target, &xt, &yt);
-        AERInstanceGetPosition(other, &xo, &yo);
-        float dx = xt - xo;
-        float dy = yt - yo;
+        float leftT, topT, rightT, bottomT;
+        AERInstanceGetBoundingBox(target, &leftT, &topT, &rightT, &bottomT);
+        float leftO, topO, rightO, bottomO;
+        AERInstanceGetBoundingBox(other, &leftO, &topO, &rightO, &bottomO);
+        float dx = ((rightT + leftT) - (rightO + leftO)) / 2.0f;
+        float dy = ((bottomT + topT) - (bottomO + topO)) / 2.0f;
         /*
          * If balloon and other object are at the exact same position,
          * randomly generate motion.
